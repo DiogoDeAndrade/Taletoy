@@ -4,20 +4,26 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [Header("Visuals")]
+    [Header("Death")]
     [SerializeField]
     private Sprite          deathSprite;
     [SerializeField]
     private Color           deathColor = Color.red;
-    
+    [SerializeField]
+    private Hypertag        deathByWalking;
+
     private int             _age;
     private float           deathProbabilityWalk;
     private float           deathProbability;
     private float           deathProbabilityModifier;
     private SpriteRenderer  spriteRenderer;
     private List<LifeEvent> lifeEvents = new();
-
+    private bool            _isDead = false;
+    private GridObject      gridObject;
+    
     public int age => _age;
+    public bool isDead => _isDead;
+    public Vector2Int gridPosition => gridObject.gridPosition;
 
     void Start()
     {
@@ -26,7 +32,7 @@ public class Player : MonoBehaviour
         deathProbabilityWalk = Globals.startDeathProbabilityWalk;
         deathProbabilityModifier = Random.Range(0.8f, 1.2f);
 
-        var gridObject = GetComponent<GridObject>();
+        gridObject = GetComponent<GridObject>();
         gridObject.onMoveEnd += GridObject_onMoveEnd;
 
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -42,7 +48,7 @@ public class Player : MonoBehaviour
             float f = Random.Range(0.0f, 1.0f);
             if (f < deathProbabilityWalk)
             {
-                Die();
+                Die(deathByWalking);
             }
         }
     }
@@ -54,16 +60,20 @@ public class Player : MonoBehaviour
         deathProbabilityWalk += Globals.incDeathProbabilityWalk * years * deathProbabilityModifier;
     }
 
-    void Die()
+    void Die(Hypertag deathReason)
     {
-        // Die!
+        _isDead = true;
+
         spriteRenderer.sprite = deathSprite;
         spriteRenderer.color = deathColor;
 
         var gridMovement = GetComponent<MovementGridXY>();
         gridMovement.enabled = false;
 
-        lifeEvents.Add(new LifeEvent(LifeEvent.Type.DeathOfOldAge, _age));
+        lifeEvents.Add(new LifeEvent(LifeEvent.Type.Death, _age)
+        {
+            deathReason = deathReason
+        });
 
         string lifeText = ConvertLifeEventsToText();
 
@@ -80,5 +90,10 @@ public class Player : MonoBehaviour
         }
 
         return ret;
+    }
+
+    public void Kill(Hypertag deathReason)
+    {
+        Die(deathReason);
     }
 }

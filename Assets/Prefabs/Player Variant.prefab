@@ -12,6 +12,18 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 1207921789964353939, guid: 741f551847d44bc4695a6965cb15d1d8, type: 3}
+    - target: {fileID: 2626416734755091146, guid: 36a361c333d63aa438252472659f6173, type: 3}
+      propertyPath: m_Color.b
+      value: 0.4203098
+      objectReference: {fileID: 0}
+    - target: {fileID: 2626416734755091146, guid: 36a361c333d63aa438252472659f6173, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7830189
+      objectReference: {fileID: 0}
+    - target: {fileID: 2626416734755091146, guid: 36a361c333d63aa438252472659f6173, type: 3}
+      propertyPath: m_Color.r
+      value: 0.36565503
+      objectReference: {fileID: 0}
     - target: {fileID: 2922397399109486284, guid: 36a361c333d63aa438252472659f6173, type: 3}
       propertyPath: m_LocalPosition.x
       value: -88.1
@@ -69,6 +81,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6836753331618669674, guid: 36a361c333d63aa438252472659f6173, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8278334203730436912}
+    - targetCorrespondingSourceObject: {fileID: 6836753331618669674, guid: 36a361c333d63aa438252472659f6173, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1300807798481892168}
   m_SourcePrefab: {fileID: 100100000, guid: 36a361c333d63aa438252472659f6173, type: 3}
 --- !u!1 &8064012740464684201 stripped
 GameObject:
@@ -155,3 +170,18 @@ MonoBehaviour:
     keyPositive: 275
     keyNegative: 276
     inputAction: ToggleTurn
+--- !u!114 &1300807798481892168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8064012740464684201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2192de7226b7eba4e90435ee34aeca45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  deathSprite: {fileID: 445465845087578689, guid: 741f551847d44bc4695a6965cb15d1d8, type: 3}
+  deathColor: {r: 0.8396226, g: 0.2891153, b: 0.2891153, a: 1}
+  deathByWalking: {fileID: 11400000, guid: f6372cb245c737a4794f94c92da98b23, type: 2}

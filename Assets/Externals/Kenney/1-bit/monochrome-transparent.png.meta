@@ -4292,7 +4292,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: monochrome-transparent_21
+      name: spikes
       rect:
         serializedVersion: 2
         x: 374
@@ -4974,7 +4974,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: monochrome-transparent_52
+      name: tree
       rect:
         serializedVersion: 2
         x: 68
@@ -27740,7 +27740,6 @@ TextureImporter:
       monochrome-transparent_207: 3536936788562755101
       monochrome-transparent_208: -1261552178543718725
       monochrome-transparent_209: 2134251018344172990
-      monochrome-transparent_21: -5474908883602114175
       monochrome-transparent_210: -2673208600805588911
       monochrome-transparent_211: -5194193996232126503
       monochrome-transparent_212: -5783770093424691980
@@ -28084,7 +28083,6 @@ TextureImporter:
       monochrome-transparent_517: 1897200401585351483
       monochrome-transparent_518: -479597657347978036
       monochrome-transparent_519: 7609837609358092607
-      monochrome-transparent_52: -8358379930127809088
       monochrome-transparent_520: -2874187203047987373
       monochrome-transparent_521: 8564687688773349440
       monochrome-transparent_522: 8621127887557897650
@@ -28616,6 +28614,8 @@ TextureImporter:
       monochrome-transparent_997: -4769638504823791922
       monochrome-transparent_998: 6884933825000278924
       monochrome-transparent_999: 4670494273230919320
+      spikes: -5474908883602114175
+      tree: -8358379930127809088
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
