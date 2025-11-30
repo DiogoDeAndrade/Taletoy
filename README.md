@@ -11,7 +11,6 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 
 ## Todo
 
-* Character death
 * Collect events
 * Interact with the world 
 * Select icons to use

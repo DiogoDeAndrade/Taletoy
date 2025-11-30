@@ -18,3 +18,7 @@ MonoBehaviour:
   _healthResource: {fileID: 0}
   _weaponSlot: {fileID: 0}
   _startAge: 4
+  _startDeathProbabilityWalk: -0.3
+  _startDeathProbability: -0.2
+  _incDeathProbabilityWalk: 0.005
+  _incDeathProbability: 0.02

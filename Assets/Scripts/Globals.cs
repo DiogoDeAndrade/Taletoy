@@ -7,7 +7,11 @@ public class Globals : GlobalsBase
 {
     [HorizontalLine(color: EColor.Green)]
 
-    [SerializeField] private int _startAge = 4;
+    [SerializeField] private int    _startAge = 4;
+    [SerializeField] private float  _startDeathProbabilityWalk = -0.3f;
+    [SerializeField] private float  _startDeathProbability = -0.2f;
+    [SerializeField] private float  _incDeathProbabilityWalk = 0.015f;
+    [SerializeField] private float  _incDeathProbability = 0.02f;
 
 
     protected static Globals _instance = null;
@@ -26,5 +30,9 @@ public class Globals : GlobalsBase
     }
 
     public static int startAge => instance._startAge;
+    public static float startDeathProbabilityWalk => instance._startDeathProbabilityWalk;
+    public static float startDeathProbability => instance._startDeathProbability;
+    public static float incDeathProbabilityWalk => instance._incDeathProbabilityWalk;
+    public static float incDeathProbability => instance._incDeathProbability;
 
 }
