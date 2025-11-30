@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UC;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ public class Player : MonoBehaviour
     private float           deathProbability;
     private float           deathProbabilityModifier;
     private SpriteRenderer  spriteRenderer;
+    private List<LifeEvent> lifeEvents = new();
 
     public int age => _age;
 
@@ -60,5 +62,23 @@ public class Player : MonoBehaviour
 
         var gridMovement = GetComponent<MovementGridXY>();
         gridMovement.enabled = false;
+
+        lifeEvents.Add(new LifeEvent(LifeEvent.Type.DeathOfOldAge, _age));
+
+        string lifeText = ConvertLifeEventsToText();
+
+        Debug.Log(lifeText);
+    }
+
+    string ConvertLifeEventsToText()
+    {
+        string ret = "";
+
+        foreach (var evt in lifeEvents)
+        {
+            ret += $"{evt.GetString()}\n";
+        }
+
+        return ret;
     }
 }
