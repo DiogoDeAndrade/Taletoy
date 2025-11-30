@@ -11,8 +11,6 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 
 ## Todo
 
-* Move charater around
-* Age character
 * Character death
 * Collect events
 * Interact with the world 
