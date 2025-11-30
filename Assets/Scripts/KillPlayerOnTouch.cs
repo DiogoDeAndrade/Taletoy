@@ -3,12 +3,14 @@ using UnityEngine;
 
 public class KillPlayerOnTouch : MonoBehaviour
 {
-    [SerializeField] private Hypertag playerTag;
-    [SerializeField] private Hypertag deathReason;
+    [SerializeField] private Hypertag _playerTag;
+    [SerializeField] private Hypertag _deathReason;
     
     GridObject  gridObject;
     Player      player;
 
+    public Hypertag playerTag { get { return _playerTag; } set { _playerTag = value; } }
+    public Hypertag deathReason { get { return _deathReason; } set { _deathReason = value; } }
 
     void Start()
     {
@@ -20,7 +22,7 @@ public class KillPlayerOnTouch : MonoBehaviour
     {
         if (!player)
         {
-            player = playerTag.FindFirst<Player>();
+            player = _playerTag.FindFirst<Player>();
             if (player == null) return;
         }
         
@@ -28,7 +30,7 @@ public class KillPlayerOnTouch : MonoBehaviour
 
         if (player.gridPosition == gridObject.gridPosition)
         {
-            player.Kill(deathReason);
+            player.Kill(_deathReason);
         }
     }
 }

@@ -22,3 +22,4 @@ MonoBehaviour:
   _startDeathProbability: -0.2
   _incDeathProbabilityWalk: 0.005
   _incDeathProbability: 0.02
+  _playerTag: {fileID: 11400000, guid: c3b5014a70ad2134cb0f46f150974eaa, type: 2}

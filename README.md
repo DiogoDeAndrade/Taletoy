@@ -1,4 +1,4 @@
-# TALETOYU
+# TALETOY
 
 Developed for the November [Game Creators Club](https://game-creators-club.itch.io/) at Lusofona University, with theme "What If".
 
@@ -11,8 +11,6 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 
 ## Todo
 
-* Collect events
-* Interact with the world 
 * Select icons to use
   * Add tags, names, conditions
   * Figure out actions to use

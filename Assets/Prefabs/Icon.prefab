@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8667317167587904904}
   - component: {fileID: 6692243114575156483}
   - component: {fileID: 8304315972149535390}
+  - component: {fileID: 5106040286189553488}
   m_Layer: 0
   m_Name: Icon
   m_TagString: Untagged
@@ -131,3 +132,15 @@ MonoBehaviour:
     height: 1
   separateForInteraction: 0
   colliderTypeForInteraction: 1
+--- !u!114 &5106040286189553488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205918730475428648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bd1caea2e7c25648880d05e3f4b965d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Icon

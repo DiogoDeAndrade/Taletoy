@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public struct Action
+    {
+        public GridActionContainer.NamedAction  action;
+        public KeyCode                          keyCode;
+    }
+
     [Header("Death")]
     [SerializeField]
     private Sprite          deathSprite;
@@ -20,7 +26,10 @@ public class Player : MonoBehaviour
     private List<LifeEvent> lifeEvents = new();
     private bool            _isDead = false;
     private GridObject      gridObject;
-    
+    private GridSystem      gridSystem;
+    private List<Action>    availableActions;
+    private ActionsPanel    actionsPanel;
+
     public int age => _age;
     public bool isDead => _isDead;
     public Vector2Int gridPosition => gridObject.gridPosition;
@@ -35,7 +44,11 @@ public class Player : MonoBehaviour
         gridObject = GetComponent<GridObject>();
         gridObject.onMoveEnd += GridObject_onMoveEnd;
 
+        gridSystem = GetComponentInParent<GridSystem>();
+
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        actionsPanel = FindFirstObjectByType<ActionsPanel>();
     }
 
     private void GridObject_onMoveEnd(Vector2Int sourcePos, Vector2Int destPos, bool success)
@@ -51,9 +64,11 @@ public class Player : MonoBehaviour
                 Die(deathByWalking);
             }
         }
+
+        actionsPanel?.RefreshActions();
     }
 
-    void IncAge(int years)
+    public void IncAge(int years)
     {
         _age += years;
         deathProbability += Globals.incDeathProbability * years * deathProbabilityModifier;
@@ -95,5 +110,109 @@ public class Player : MonoBehaviour
     public void Kill(Hypertag deathReason)
     {
         Die(deathReason);
+    }
+
+    private void Update()
+    {
+        HandleOptions();
+    }
+
+    void HandleOptions()
+    {
+        availableActions = new();
+        if (isDead) return;
+
+        var position = gridObject.GetPositionFacing();
+
+        var actions = gridSystem.GetActions(gridObject, position);
+
+        int cIndex = -1;
+
+        bool[] keys = new bool[26];
+        foreach (var action in actions)
+        {
+            // Assign a key
+            var verb = action.name.ToUpper();
+            char c = '\0';
+            for (int i = 0; i < verb.Length; i++)
+            {
+                char cc = verb[i];
+                cIndex = ((int)cc) - 'A';
+                if (!keys[cIndex])
+                {
+                    c = cc;
+                    break;
+                }
+            }
+            if (c == '\0')
+            {
+                // Select the first unused letter
+                for (int i = 0; i < keys.Length; i++)
+                {
+                    if (!keys[i])
+                    {
+                        c = (char)(i + 'A');
+                        break;
+                    }
+                }
+            }
+            cIndex = ((int)c) - 'A';
+            keys[cIndex] = true;
+            availableActions.Add(new Action()
+            {
+                keyCode = (KeyCode)(KeyCode.A + cIndex),
+                action = action
+            });
+        }
+    }
+
+    public List<Action> GetActions() => availableActions;
+
+    public void AddEvent(IconDef iconDef, IconAction action)
+    {
+        float f = Random.Range(0.0f, 1.0f) * action.dangerMultiplier;
+        if (f < deathProbability)
+        {
+            lifeEvents.Add(new LifeEvent(LifeEvent.Type.ActionDeath, _age)
+            {
+                action = action,
+                iconDef = iconDef
+            });
+        }
+        else
+        {
+            lifeEvents.Add(new LifeEvent(LifeEvent.Type.Action, _age)
+            {
+                action = action,
+                iconDef = iconDef
+            });
+        }
+
+        deathProbability += action.deltaDanger;
+        deathProbabilityWalk += action.deltaDanger;
+    }
+
+    public void CompleteAction()
+    {
+        HandleOptions();
+        actionsPanel?.RefreshActions();
+    }
+
+    public bool HasEventWithCategories(Hypertag[] categories)
+    {
+        foreach (var evt in lifeEvents)
+        {
+            switch (evt.type)
+            {
+                case LifeEvent.Type.Action:
+                case LifeEvent.Type.ActionDeath:
+                    if (evt.iconDef.HasCategory(categories)) return true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return false;
     }
 }

@@ -184,4 +184,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   deathSprite: {fileID: 445465845087578689, guid: 741f551847d44bc4695a6965cb15d1d8, type: 3}
   deathColor: {r: 0.8396226, g: 0.2891153, b: 0.2891153, a: 1}
-  deathByWalking: {fileID: 11400000, guid: f6372cb245c737a4794f94c92da98b23, type: 2}
+  deathByWalking: {fileID: -1067207783581873144, guid: 4dcbce20a39bf924c8efb2da7e87bb87, type: 3}

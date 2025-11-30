@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 2922397399109486284}
   - component: {fileID: 2626416734755091146}
   - component: {fileID: 64467355501161025}
+  - component: {fileID: 8728534112301977914}
   m_Layer: 0
-  m_Name: Character
+  m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +59,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 00203c5c3cc86ce468b227e90799daea, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,3 +109,22 @@ MonoBehaviour:
   moveAnimationOnCollision: 0.5
   moveSnd: {fileID: 0}
   moveFailSnd: {fileID: 0}
+--- !u!114 &8728534112301977914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6836753331618669674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fdf1d1ec10f329499fc8ba5a84b6392, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UC.SpriteEffect
+  effects: 8
+  palette: {fileID: 0}
+  inverseFactor: 0
+  flashColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 1
+  outlineColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 1}
+  createMaterialCopy: 1

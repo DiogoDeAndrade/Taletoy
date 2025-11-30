@@ -12,6 +12,7 @@ public class Globals : GlobalsBase
     [SerializeField] private float  _startDeathProbability = -0.2f;
     [SerializeField] private float  _incDeathProbabilityWalk = 0.015f;
     [SerializeField] private float  _incDeathProbability = 0.02f;
+    [SerializeField] private Hypertag   _playerTag;
 
 
     protected static Globals _instance = null;
@@ -34,5 +35,6 @@ public class Globals : GlobalsBase
     public static float startDeathProbability => instance._startDeathProbability;
     public static float incDeathProbabilityWalk => instance._incDeathProbabilityWalk;
     public static float incDeathProbability => instance._incDeathProbability;
+    public static Hypertag playerTag => instance._playerTag;
 
 }
