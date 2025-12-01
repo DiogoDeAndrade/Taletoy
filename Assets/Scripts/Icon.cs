@@ -29,5 +29,17 @@ public class Icon : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if ((def) && (def.sprite != null))
+        {
+            if (!spriteRenderer) spriteRenderer = GetComponent<SpriteRenderer>();
+            spriteRenderer.color = def.color;
+            spriteRenderer.sprite = def.sprite;
+        }
+    }
+#endif
+
     public IconDef GetDef() => def;
 }

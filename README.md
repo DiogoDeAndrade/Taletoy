@@ -12,7 +12,7 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 ## Todo
 
 * Build icons/actions - LLM
-* Generate board and generate icons
+* Add combat text
 * Integrate LLM to write story
 * UI to select style
 

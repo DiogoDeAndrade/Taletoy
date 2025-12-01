@@ -12,7 +12,7 @@ using UnityEngine;
 
 /// <summary>
 /// Importer for *.taletoyicons files.
-/// - Main asset: TaleToyAssetRoot
+/// - Main asset: TaleToyIconCollection
 /// - Subassets: IconDef + all needed Hypertag objects
 /// </summary>
 [ScriptedImporter(1, "taletoyicons")]
@@ -25,27 +25,13 @@ public class TaletoyIconsImporter : ScriptedImporter
         // ----------------------------------------------------------------
         // 1) Create root as main asset
         // ----------------------------------------------------------------
-        var root = ScriptableObject.CreateInstance<TaleToyAssetRoot>();
+        var root = ScriptableObject.CreateInstance<TaleToyIconCollection>();
         root.name = Path.GetFileNameWithoutExtension(ctx.assetPath);
 
         ctx.AddObjectToAsset("Root", root);
         ctx.SetMainObject(root);
 
-        // Optional: find a field "icons" on the root that is a list
-        FieldInfo iconsField = typeof(TaleToyAssetRoot).GetField(
-            "icons",
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-        IList iconsList = null;
-        if (iconsField != null && typeof(IList).IsAssignableFrom(iconsField.FieldType))
-        {
-            iconsList = iconsField.GetValue(root) as IList;
-            if (iconsList == null)
-            {
-                iconsList = (IList)Activator.CreateInstance(iconsField.FieldType);
-                iconsField.SetValue(root, iconsList);
-            }
-        }
+        var collectionIcons = new List<IconDef>();
 
         // ----------------------------------------------------------------
         // 2) Hypertag cache (per file) -> all tags are subassets of root
@@ -134,12 +120,14 @@ public class TaletoyIconsImporter : ScriptedImporter
             string key = string.IsNullOrEmpty(data.Name) ? $"Icon_{index}" : data.Name;
             ctx.AddObjectToAsset(key, iconDef);
 
-            // Hook into TaleToyAssetRoot.icons if present
-            if (iconsList != null)
-                iconsList.Add(iconDef);
+            // Add to collection
+            collectionIcons.Add(iconDef);
 
             index++;
         }
+
+        // Fill collection array
+        root.icons = collectionIcons.ToArray();
     }
 }
 
