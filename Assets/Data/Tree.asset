@@ -19,8 +19,20 @@ MonoBehaviour:
   deathTouchType: {fileID: 0}
   actions:
   - actionTag: {fileID: 120784062912055423, guid: 4dcbce20a39bf924c8efb2da7e87bb87, type: 3}
-    ageRange: {x: 1, y: 3}
+    actionDuration: {x: 1, y: 3}
+    conditions: []
+    dangerMultiplier: 1
+    deltaDanger: 0
   - actionTag: {fileID: 2286165573252355181, guid: 4dcbce20a39bf924c8efb2da7e87bb87, type: 3}
-    ageRange: {x: 1, y: 1}
+    actionDuration: {x: 1, y: 1}
+    conditions: []
+    dangerMultiplier: 1
+    deltaDanger: 0
   - actionTag: {fileID: 7138191117036808646, guid: 4dcbce20a39bf924c8efb2da7e87bb87, type: 3}
-    ageRange: {x: 2, y: 6}
+    actionDuration: {x: 2, y: 6}
+    conditions:
+    - type: 0
+      age: 16
+      categories: []
+    dangerMultiplier: 1
+    deltaDanger: 0

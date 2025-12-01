@@ -1,4 +1,5 @@
 using NaughtyAttributes;
+using System.Collections.Generic;
 using UC;
 using UnityEngine;
 
@@ -13,9 +14,31 @@ public class Globals : GlobalsBase
     [SerializeField] private float  _incDeathProbabilityWalk = 0.015f;
     [SerializeField] private float  _incDeathProbability = 0.02f;
     [SerializeField] private Hypertag   _playerTag;
+    [SerializeField] private Sprite[]   _sprites;
+
+    private Dictionary<string, Sprite> _spritesDictionary;
 
 
     protected static Globals _instance = null;
+
+    private Sprite _GetSpriteByName(string name)
+    {
+        if (_spritesDictionary == null)
+        {
+            _spritesDictionary = new();
+            foreach (var spr in _sprites)
+            {
+                _spritesDictionary.Add(spr.name.ToLower(), spr);
+            }
+        }
+
+        if (_spritesDictionary.TryGetValue(name.ToLower(), out var sprite))
+        {
+            return sprite;
+        }
+
+        return null;
+    }
 
     public static Globals instance
     {
@@ -36,5 +59,5 @@ public class Globals : GlobalsBase
     public static float incDeathProbabilityWalk => instance._incDeathProbabilityWalk;
     public static float incDeathProbability => instance._incDeathProbability;
     public static Hypertag playerTag => instance._playerTag;
-
+    public static Sprite GetSpriteByName(string name) => instance._GetSpriteByName(name);
 }

@@ -11,11 +11,10 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 
 ## Todo
 
-* Select icons to use
-  * Add tags, names, conditions
-  * Figure out actions to use
-* Add conditions to elements 
+* Build icons/actions - LLM
+* Generate board and generate icons
 * Integrate LLM to write story
+* UI to select style
 
 ## Art
 

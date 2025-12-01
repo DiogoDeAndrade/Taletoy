@@ -1,0 +1,171 @@
+apple
+axe
+bat
+battleaxe
+bazooka
+bed
+belt
+boat
+bomb
+bone
+bookcase
+boots
+bow
+boy
+bread loaf
+briefcase
+building
+bullets
+cactus
+car
+castle
+cat
+cauldron
+chair
+cheese
+chest
+chicken
+closed bag
+coin
+convertible
+cooked meat
+cow
+cowboy
+crab
+crocodile
+crop
+cross block
+crossbow
+crown
+crystal
+cupboard
+devil
+dice 1
+dice 6
+dice2
+dice3
+dice4
+dice5
+dog
+door
+duck
+egg
+emote angry
+emote happy
+emote laugh
+emote sad
+farmer
+fence
+fire
+fireplace
+fish
+flag
+folder
+furniture
+gem
+ghost
+girl
+globes
+gnome
+gold pile
+grandfather
+grass
+grave
+grenade
+gun
+heart
+hook
+horse
+hourglass
+house
+imp
+key
+king
+lever
+man
+map
+meat
+mermaid
+mirror
+money
+money bill
+moth
+motorcycle helmet
+music
+necklace
+necklace cross
+nicecar
+octopus
+open bag
+padlock
+palmtree
+pear
+pickaxe
+pig
+playing card
+portrait boy
+portrait girl
+portrait man
+portrait old man
+potion
+puddle
+queen
+rambo
+rat
+raygun
+ring
+rocket
+say death
+say happy
+say love
+scorpio
+scroll
+scythe
+shield
+shotgun
+shovel
+sign
+sink
+skeleton
+skull
+slime
+soldier
+solid block
+space helmet
+spaceman
+spaceship
+spider
+spiderweb
+spikes
+staff
+stair down
+stair up
+stool
+stove
+string
+strong man
+surprise block
+sword
+table
+tank
+tent
+toilet
+torch
+train cart
+train track
+treasure
+tree
+truck
+ufo
+underwear
+uzi
+watercan
+wheelchair
+winner cup
+wizard
+woman
+worker
+workhat
+zombie
+zookeeper
+goblin
