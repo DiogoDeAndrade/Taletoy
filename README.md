@@ -39,7 +39,13 @@ I'm using llama.cpp, so here's some information regarding how to compile
   cd Release
   llama-cli.exe -m c:\projects\Other\models\Meta-Llama-3.1-8B-Instruct-Q4_K_L.gguf -p "Write a short story about a farmer who restores an old barn, with no more than 4 paragraphs."
   ```
-- Now we need to build a DLL wrapper - 
+- Now we need to build a DLL wrapper. The file is available on WrapperDLL/llm_wrapper.cpp. The CMakeLists.txt file is just a sample, you need to add this to the existing file on llama.cpp:
+  ```
+  add_library(llm_wrapper SHARED custom/llm_wrapper.cpp)
+  target_link_libraries(llm_wrapper PRIVATE llama)
+  target_include_directories(llm_wrapper PRIVATE .)
+  target_include_directories(llm_wrapper PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  ```
 
 ## Art
 
