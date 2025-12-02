@@ -4,11 +4,11 @@ using UC.Interaction;
 using UnityEngine;
 
 [System.Serializable]
-public class IconAction
+public class ConceptAction
 {
     public Hypertag         actionTag;
     public Vector2Int       actionDuration = Vector2Int.one;
-    public IconCondition[]  conditions;
+    public ConceptCondition[]  conditions;
     public float            dangerMultiplier = 1.0f;
     public float            deltaDanger = 0.0f;
 
@@ -26,7 +26,7 @@ public class IconAction
 }
 
 [System.Serializable]
-public class IconCondition
+public class ConceptCondition
 {
     public enum Type { RequireAge, RequireCategory };
 

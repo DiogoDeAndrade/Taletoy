@@ -194,7 +194,7 @@ public class Player : MonoBehaviour
 
     public List<Action> GetActions() => availableActions;
 
-    public void AddEvent(ConceptDef iconDef, IconAction action)
+    public void AddEvent(ConceptDef iconDef, ConceptAction action)
     {
         float f = Random.Range(0.0f, 1.0f) * action.dangerMultiplier;
         if (f < deathProbability)
@@ -264,31 +264,6 @@ public class Player : MonoBehaviour
         }
 
         var def = concept.GetDef();
-        return (ToDisplayName(def.name), def.color);
-    }
-
-    public static string ToDisplayName(string id)
-    {
-        if (string.IsNullOrEmpty(id))
-            return "";
-
-        // Replace underscores with spaces
-        string s = id.Replace('_', ' ');
-
-        // Insert spaces before capital letters (but not at the beginning)
-        s = Regex.Replace(s, "([a-z])([A-Z])", "$1 $2");
-
-        // Insert spaces between acronym sequences and normal words:
-        // "URLValue" -> "URL Value"
-        s = Regex.Replace(s, "([A-Z]+)([A-Z][a-z])", "$1 $2");
-
-        // Normalize multiple spaces
-        s = Regex.Replace(s, @"\s+", " ").Trim();
-
-        // Title case the whole thing
-        TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
-        s = ti.ToTitleCase(s.ToLower());
-
-        return s;
-    }
+        return (def.name.ToDisplayName(), def.color);
+    }    
 }

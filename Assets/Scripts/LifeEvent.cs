@@ -11,7 +11,7 @@ public class LifeEvent
     public int          age;
     public Hypertag     deathReason;
     public ConceptDef      iconDef;
-    public IconAction   action;
+    public ConceptAction   action;
 
     public LifeEvent(Type type, int age)
     {
@@ -24,11 +24,11 @@ public class LifeEvent
         switch (type)
         {
             case Type.Death:
-                return $"- Died {deathReason.displayName} at {age} years";
+                return $"- Died {deathReason.displayName} at {age} years".CapitalizeFirstLowerRest();
             case Type.Action:
-                return $"- {action.actionTag.displayName} {iconDef.name} at {age} years";
+                return $"- {action.actionTag.displayName} {iconDef.name.ToDisplayName()} at {age} years".CapitalizeFirstLowerRest();
             case Type.ActionDeath:
-                return $"- Died while {action.actionTag.displayName} {iconDef.name} at {age} years";
+                return $"- Died while {action.actionTag.displayName} {iconDef.name.ToDisplayName()} at {age} years".CapitalizeFirstLowerRest();
             default:
                 break;
         }

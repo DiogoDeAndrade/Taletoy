@@ -11,12 +11,12 @@ using UnityEditor.AssetImporters;
 using UnityEngine;
 
 /// <summary>
-/// Importer for *.taletoyicons files.
-/// - Main asset: TaleToyIconCollection
-/// - Subassets: IconDef + all needed Hypertag objects
+/// Importer for *.concepts files.
+/// - Main asset: ConceptCollection
+/// - Subassets: ConceptDef + all needed Hypertag objects
 /// </summary>
-[ScriptedImporter(1, "taletoyicons")]
-public class TaletoyIconsImporter : ScriptedImporter
+[ScriptedImporter(1, "concepts")]
+public class ConceptsImporter : ScriptedImporter
 {
     public override void OnImportAsset(AssetImportContext ctx)
     {
@@ -88,21 +88,35 @@ public class TaletoyIconsImporter : ScriptedImporter
             }
 
             // Death touch -> cause as Hypertag subasset too
-            iconDef.deathTouch = !string.IsNullOrEmpty(data.DeathTouchCause);
+            iconDef.deathTouch = !string.IsNullOrEmpty(data.DeathTouchTagName);
             if (iconDef.deathTouch)
             {
-                iconDef.deathTouchType = ResolveHypertag(data.DeathTouchCause);
+                var deathTag = ResolveHypertag(data.DeathTouchTagName);
+                if (deathTag != null && !string.IsNullOrEmpty(data.DeathTouchDisplayName))
+                {
+                    deathTag.displayName = data.DeathTouchDisplayName;
+                }
+
+                iconDef.deathTouchType = deathTag;
             }
 
             // Actions
-            iconDef.actions = new List<IconAction>();
+            iconDef.actions = new List<ConceptAction>();
             foreach (var actData in data.Actions)
             {
-                var iconAction = new IconAction
+                Hypertag actionTag = null;
+                if (!string.IsNullOrEmpty(actData.ActionTagName))
                 {
-                    actionTag = string.IsNullOrEmpty(actData.ActionTagName)
-                        ? null
-                        : ResolveHypertag(actData.ActionTagName),
+                    actionTag = ResolveHypertag(actData.ActionTagName);
+                    if (actionTag != null && !string.IsNullOrEmpty(actData.ActionTagDisplayName))
+                    {
+                        actionTag.displayName = actData.ActionTagDisplayName;
+                    }
+                }
+
+                var iconAction = new ConceptAction
+                {
+                    actionTag = actionTag,
                     actionDuration = actData.Duration,
                     dangerMultiplier = actData.DangerMultiplier,
                     deltaDanger = actData.DeltaDanger
@@ -175,16 +189,20 @@ public class TaletoyIconFileParser
 {
     // -------------------- Data DTOs (intermediate) ----------------------
 
-    public class IconDefData
+    public class ConceptDefData
     {
         public string Name;
         public string IconSpriteName;
         public List<string> CategoryNames = new List<string>();
         public Color? Color;
-        public string DeathTouchCause;
+
+        // tag name + optional display name from touch_death(...)
+        public string DeathTouchTagName;
+        public string DeathTouchDisplayName;
+
         public List<ActionData> Actions = new List<ActionData>();
 
-        public IconDefData(string name)
+        public ConceptDefData(string name)
         {
             Name = name;
         }
@@ -192,11 +210,14 @@ public class TaletoyIconFileParser
 
     public class ActionData
     {
+        // tag name + optional display name from action(...)
         public string ActionTagName;
+        public string ActionTagDisplayName;
+
         public Vector2Int Duration = Vector2Int.one;
         public float DangerMultiplier = 1.0f;
         public float DeltaDanger = 0.0f;
-        public List<IconCondition> Conditions = new List<IconCondition>();
+        public List<ConceptCondition> Conditions = new List<ConceptCondition>();
     }
 
     // -------------------- Interfaces for modularity ---------------------
@@ -210,7 +231,7 @@ public class TaletoyIconFileParser
     public interface IConditionParser
     {
         string Keyword { get; }
-        IconCondition Parse(string argumentList, TaletoyParserContext ctx);
+        ConceptCondition Parse(string argumentList, TaletoyParserContext ctx);
     }
 
     private readonly TaletoyParserContext _ctx;
@@ -234,12 +255,12 @@ public class TaletoyIconFileParser
         };
     }
 
-    public List<IconDefData> Parse(string text)
+    public List<ConceptDefData> Parse(string text)
     {
-        var result = new List<IconDefData>();
+        var result = new List<ConceptDefData>();
 
         string[] lines = text.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
-        IconDefData current = null;
+        ConceptDefData current = null;
 
         for (int i = 0; i < lines.Length; i++)
         {
@@ -269,7 +290,7 @@ public class TaletoyIconFileParser
                     continue;
                 }
 
-                current = new IconDefData(iconName);
+                current = new ConceptDefData(iconName);
                 result.Add(current);
                 continue;
             }
@@ -315,8 +336,11 @@ public class TaletoyIconFileParser
                     break;
 
                 case "touch_death":
-                    current.DeathTouchCause = argList.Trim();
-                    break;
+                    {
+                        // Allows syntax: touch_death(Impale[impaled])
+                        ParseTagAndDisplay(argList, out current.DeathTouchTagName, out current.DeathTouchDisplayName);
+                        break;
+                    }
 
                 case "action":
                     var action = ParseAction(argList, i + 1);
@@ -348,12 +372,15 @@ public class TaletoyIconFileParser
 
         var actionData = new ActionData
         {
-            ActionTagName = topLevelParts[0].Trim(),
             Duration = ParseDuration(topLevelParts[1].Trim(), lineNumber),
             DangerMultiplier = 1.0f,
             DeltaDanger = 0.0f,
-            Conditions = new List<IconCondition>()
+            Conditions = new List<ConceptCondition>()
         };
+
+        // First argument: tag name + optional display name, e.g. Hug[hugged]
+        ParseTagAndDisplay(topLevelParts[0], out actionData.ActionTagName, out actionData.ActionTagDisplayName);
+
 
         for (int k = 2; k < topLevelParts.Count; k++)
         {
@@ -374,7 +401,7 @@ public class TaletoyIconFileParser
 
             if (_conditionParsers.TryGetValue(funcName, out var condParser))
             {
-                IconCondition cond = condParser.Parse(innerArgs, _ctx);
+                ConceptCondition cond = condParser.Parse(innerArgs, _ctx);
                 if (cond != null) actionData.Conditions.Add(cond);
                 continue;
             }
@@ -566,7 +593,7 @@ public class TaletoyIconFileParser
     {
         public string Keyword => "RequireAge";
 
-        public IconCondition Parse(string argumentList, TaletoyParserContext ctx)
+        public ConceptCondition Parse(string argumentList, TaletoyParserContext ctx)
         {
             var parts = SimpleCsvSplit(argumentList).ToArray();
             if (parts.Length < 1)
@@ -581,9 +608,9 @@ public class TaletoyIconFileParser
                 return null;
             }
 
-            return new IconCondition
+            return new ConceptCondition
             {
-                type = IconCondition.Type.RequireAge,
+                type = ConceptCondition.Type.RequireAge,
                 age = age
             };
         }
@@ -593,7 +620,7 @@ public class TaletoyIconFileParser
     {
         public string Keyword => "RequireCategory";
 
-        public IconCondition Parse(string argumentList, TaletoyParserContext ctx)
+        public ConceptCondition Parse(string argumentList, TaletoyParserContext ctx)
         {
             var parts = SimpleCsvSplit(argumentList)
                 .Select(p => p.Trim())
@@ -619,11 +646,34 @@ public class TaletoyIconFileParser
                 return null;
             }
 
-            return new IconCondition
+            return new ConceptCondition
             {
-                type = IconCondition.Type.RequireCategory,
+                type = ConceptCondition.Type.RequireCategory,
                 categories = tags.ToArray()
             };
+        }
+    }
+
+    private static void ParseTagAndDisplay(string token, out string tagName, out string displayName)
+    {
+        tagName = null;
+        displayName = null;
+
+        if (string.IsNullOrWhiteSpace(token))
+            return;
+
+        token = token.Trim();
+
+        int bracketIdx = token.IndexOf('[');
+        if (bracketIdx >= 0 && token.EndsWith("]"))
+        {
+            tagName = token.Substring(0, bracketIdx).Trim();
+            string inner = token.Substring(bracketIdx + 1, token.Length - bracketIdx - 2).Trim();
+            displayName = string.IsNullOrEmpty(inner) ? null : inner;
+        }
+        else
+        {
+            tagName = token;
         }
     }
 }

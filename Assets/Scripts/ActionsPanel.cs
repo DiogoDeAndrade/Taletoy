@@ -46,7 +46,7 @@ public class ActionsPanel : MonoBehaviour
         else
         {
             title.gameObject.SetActive(true);
-            title.text = titleText;
+            title.text = titleText.ToDisplayName();
             title.color = color;
         }
 

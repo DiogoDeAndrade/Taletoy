@@ -21,7 +21,7 @@ public class ActionPanelElement : MonoBehaviour
     {
         _action = action;
 
-        text.text = string.Format(keyIndex + ". " + action.action.name);
+        text.text = string.Format(keyIndex + ". " + action.action.name.ToDisplayName());
         this.keyIndex = keyIndex;        
     }
 

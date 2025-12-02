@@ -19,6 +19,18 @@ public class GridAction_Icon : GridActionContainer
     {
         var player = Globals.playerTag.FindFirst<Player>();
 
+        if (iconDef == null)
+        {
+            // No icon defined for some reason
+            var icon = GetComponent<Concept>();
+            iconDef = icon?.GetDef() ?? null;
+            if (iconDef == null)
+            {
+                Debug.LogWarning("No concept defined on Concept behaviour!");
+                return;
+            }
+        }
+
         foreach (var action in iconDef.actions)
         {
             if (action.Evaluate(player))
@@ -38,22 +50,29 @@ public class GridAction_Icon : GridActionContainer
 
     private bool RunAction(NamedAction action, GridObject subject, Vector2Int position)
     {
-        IconAction iconAction = null;
+        ConceptAction conceptAction = null;
 
         foreach (var a in iconDef.actions)
         {
             if (a.actionTag.name == action.name)
             {
-                iconAction = a;
+                conceptAction = a;
                 break;
             }
         }
 
-        if (iconAction == null) return false;
+        if (conceptAction == null) return false;
+
+        var def = subject.GetComponent<Concept>().GetDef();
 
         var player = Globals.playerTag.FindFirst<Player>();
-        player.IncAge(iconAction.actionDuration.Random());
-        player.AddEvent(iconDef, iconAction);
+        var str = $"{conceptAction.actionTag.displayName} {def.name.ToDisplayName()}";
+        str = str.CapitalizeFirstLowerRest();
+
+        CombatTextManager.SpawnText(player.gameObject, str, def.color, def.color.ChangeAlpha(0.0f), 2.0f);
+
+        player.IncAge(conceptAction.actionDuration.Random());
+        player.AddEvent(iconDef, conceptAction);
 
         Destroy(gameObject);
 

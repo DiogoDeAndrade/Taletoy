@@ -11,8 +11,7 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 
 ## Todo
 
-* Build icons/actions - LLM
-* Add combat text
+* Build icons/actions - LLM (ongoing)
 * Integrate LLM to write story
 * UI to select style
 * Balance death probabilities

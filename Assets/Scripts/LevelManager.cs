@@ -100,6 +100,8 @@ public class LevelManager : MonoBehaviour
 
             if (!grid.HasTile(cellPos)) continue;
 
+            break;
+
         } while (nTries < 50);
 ;
         if (nTries == 50) return;

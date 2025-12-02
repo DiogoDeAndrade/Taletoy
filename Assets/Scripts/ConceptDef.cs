@@ -12,7 +12,7 @@ public class ConceptDef : ScriptableObject
     public bool             deathTouch;
     [ShowIf(nameof(deathTouch))]
     public Hypertag         deathTouchType;
-    public List<IconAction> actions;
+    public List<ConceptAction> actions;
 
     public bool HasCategory(Hypertag[] categories)
     {
