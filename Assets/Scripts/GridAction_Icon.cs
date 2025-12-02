@@ -69,7 +69,9 @@ public class GridAction_Icon : GridActionContainer
         var str = $"{conceptAction.actionTag.displayName} {def.name.ToDisplayName()}";
         str = str.CapitalizeFirstLowerRest();
 
-        CombatTextManager.SpawnText(player.gameObject, str, def.color, def.color.ChangeAlpha(0.0f), 2.0f);
+        var color = Color.white; // def.color
+
+        CombatTextManager.SpawnText(player.gameObject, str, color, color.ChangeAlpha(0.0f), 2.0f);
 
         player.IncAge(conceptAction.actionDuration.Random());
         player.AddEvent(iconDef, conceptAction);

@@ -16,6 +16,31 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 * UI to select style
 * Balance death probabilities
 
+## Tech stuff regarding the LLM
+
+I'm using llama.cpp, so here's some information regarding how to compile
+
+- Make libcurl available
+  - Install through vcpkg (.\vcpkg.exe install curl:x64-windows)
+  - When running the build project scripts of llama.cpp, add "-DCMAKE_TOOLCHAIN_FILE=C:/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake"
+- Generate SLN and build:
+  ```
+  git clone https://github.com/ggml-org/llama.cpp
+  cd llama.cpp
+  mkdir build
+  cd build
+  cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE="C:\projects\Other\vcpkg\scripts\buildsystems\vcpkg.cmake"
+  cmake --build . --config Release 
+  ```
+- [Find a model](https://huggingface.co/models?search=gguf) - I selected [Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct)
+- Now, now we can try the model and see if everything is working.
+  ```
+  cd bin
+  cd Release
+  llama-cli.exe -m c:\projects\Other\models\Meta-Llama-3.1-8B-Instruct-Q4_K_L.gguf -p "Write a short story about a farmer who restores an old barn, with no more than 4 paragraphs."
+  ```
+- Now we need to build a DLL wrapper - 
+
 ## Art
 
 - Font [Diary of an 8-bit mage](https://chequered.ink/product/diary-of-an-8-bit-mage/) by [Checkered Ink](https://chequered.ink/), purchased and under the [Checkered Ink License](https://chequered.ink/wp-content/uploads/2025/01/License-Agreement-All-Fonts-Pack.pdf)
