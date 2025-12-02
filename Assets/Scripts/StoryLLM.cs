@@ -11,8 +11,8 @@ public class StoryLLM
     [DllImport(DllName)]
     static extern int llm_query(string prompt);
 
-    [DllImport(DllName)]
-    static extern int llm_get_answer(int id, StringBuilder buffer, int size);
+    [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+    private static extern int llm_get_answer(int queryId, StringBuilder buffer, int bufferSize, out int generatedTokens, out int maxTokens);
 
     public const int STATUS_QUEUED = 0;
     public const int STATUS_RUNNING = 1;
@@ -46,11 +46,12 @@ public class StoryLLM
         return llm_query(prompt);
     }
 
-    public static (int status, string answer) GetAnswer(int id)
+    public static (int status, string text, int generated, int max) GetAnswer(int id)
     {
         var sb = new StringBuilder(8000);
-        int status = llm_get_answer(id, sb, sb.Capacity);
-        return (status, sb.ToString());
+        int gen, max;
+        int status = llm_get_answer(id, sb, sb.Capacity, out gen, out max);
+        return (status, sb.ToString(), gen, max);
     }
 
     public static void Shutdown()

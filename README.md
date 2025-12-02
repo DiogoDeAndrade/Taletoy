@@ -13,7 +13,10 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 
 * Build icons/actions - LLM (ongoing)
 * Integrate LLM to write story
-* UI to select style
+  * Cancel query
+  * Detect story done (```</story>```) element
+  * Add adaptability to different cards based on VRAM
+* UI to select style of story
 * Balance death probabilities
 
 ## Tech stuff regarding the LLM
@@ -46,6 +49,7 @@ I'm using llama.cpp, so here's some information regarding how to compile
   target_include_directories(llm_wrapper PRIVATE .)
   target_include_directories(llm_wrapper PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
   ```
+- I'm not going to distribute the model here, and I'll add instructions on the itch.io page of the game, since it's a 5Gb download!
 
 ## Art
 

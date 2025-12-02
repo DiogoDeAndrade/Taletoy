@@ -6,9 +6,11 @@
 #include <chrono>
 #include <unordered_map>
 #include <filesystem>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <cstdio>
 #include "llama.h"
-
-extern "C" {
 
 enum LLMInitStatus { LLM_INIT_OK = 0, LLM_INIT_ERROR = 1, LLM_INIT_MODEL_NOT_FOUND = 2 };
 
@@ -19,6 +21,8 @@ struct LLMTask {
     std::string   prompt;
     std::string   result;
     LLMTaskStatus status;
+    int           max_tokens       = 0;
+    int           generated_tokens = 0;
     std::thread   worker;
 };
 
@@ -31,6 +35,35 @@ static std::mutex                                        g_llmMutex;
 
 static std::mutex g_logMutex;
 static bool       g_logInit;
+
+static std::vector<llama_token> tokenize_prompt(llama_model * model, const std::string & text) {
+    if (text.empty()) {
+        return {};
+    }
+
+    // Rough upper bound: length + 8
+    int32_t                  n_max_tokens = (int32_t) text.size() + 8;
+    std::vector<llama_token> tokens(n_max_tokens);
+
+    const llama_vocab * vocab = llama_model_get_vocab(g_model);
+
+    // Newer llama_tokenize has extra params (add_special, parse_special).
+    // This matches current signatures; if your version differs slightly,
+    // you may need to tweak the last 1–2 bools.
+    int32_t n_tokens = llama_tokenize(vocab, text.c_str(), (int32_t) text.size(), tokens.data(), n_max_tokens,
+                                      /* add_special */ true,
+                                      /* parse_special */ false);
+
+    if (n_tokens < 0) {
+        // Error
+        return {};
+    }
+
+    tokens.resize(n_tokens);
+    return tokens;
+}
+
+extern "C" {
 
 void debug_message(const char* tmp)
 {
@@ -46,6 +79,25 @@ void debug_message(const char* tmp)
     }
 
     fprintf(file, "%s\n", tmp);
+}
+
+static llama_token sample_token_greedy(llama_context * ctx, llama_model * model) {
+    const float * logits  = llama_get_logits(ctx);
+    const llama_vocab * vocab  = llama_model_get_vocab(g_model);
+    const int     n_vocab = llama_vocab_n_tokens(vocab);
+
+    int   best_token = 0;
+    float best_logit = logits[0];
+
+    for (int token_id = 1; token_id < n_vocab; ++token_id) {
+        float logit = logits[token_id];
+        if (logit > best_logit) {
+            best_logit = logit;
+            best_token = token_id;
+        }
+    }
+
+    return (llama_token) best_token;
 }
 
 __declspec(dllexport) int llm_init(const char * model_path, int gpu_layers, int context_size) {
@@ -68,7 +120,7 @@ __declspec(dllexport) int llm_init(const char * model_path, int gpu_layers, int 
     if (!std::filesystem::exists(model_path))
     {
         char buffer[8192];
-        sprintf_s((char *)&buffer, "ERROR: Failed to load file '%s'!", model_path);
+        sprintf_s((char *)&buffer, 8192, "ERROR: Failed to load file '%s'!", model_path);
         debug_message((char *)&buffer);
 
         return LLM_INIT_MODEL_NOT_FOUND;
@@ -106,14 +158,102 @@ __declspec(dllexport) int llm_init(const char * model_path, int gpu_layers, int 
 static void run_task(LLMTask * task) {
     task->status = TASK_RUNNING;
 
+    if (!g_ctx || !g_model) {
+        task->result = "[ERROR: model not initialized]";
+        task->status = TASK_ERROR;
+        return;
+    }
+
     try {
-        std::this_thread::sleep_for(std::chrono::seconds(5));
+        // Only one thread may touch llama.cpp at a time
+        std::lock_guard<std::mutex> lock(g_llmMutex);
 
-        // TODO: Replace with real llama.cpp generation
-        task->result = "Generated text for prompt:\n\n" + task->prompt;
+        // ----------------------------------
+        // 1. Tokenize prompt
+        // ----------------------------------
+        std::vector<llama_token> prompt_tokens = tokenize_prompt(g_model, task->prompt);
+        if (prompt_tokens.empty()) {
+            task->result = "[ERROR: failed to tokenize prompt]";
+            task->status = TASK_ERROR;
+            return;
+        }
 
+        // ----------------------------------
+        // 2. Build batch for prompt
+        // ----------------------------------
+        llama_batch prompt_batch = {};
+        prompt_batch.n_tokens    = (int32_t) prompt_tokens.size();
+        prompt_batch.token       = prompt_tokens.data();
+        prompt_batch.pos         = nullptr;  // auto sequential
+        prompt_batch.seq_id      = nullptr;
+        prompt_batch.n_seq_id    = nullptr;
+        prompt_batch.logits      = nullptr;
+
+        if (llama_decode(g_ctx, prompt_batch) != 0) {
+            task->result = "[ERROR: llama_decode failed for prompt]";
+            task->status = TASK_ERROR;
+            return;
+        }
+
+        // ----------------------------------
+        // 3. Generation loop
+        // ----------------------------------
+        std::string output;
+        const int   max_new_tokens = 512;  // tune this for story length
+
+        for (int i = 0; i < max_new_tokens; ++i) {
+            // a) Sample next token (greedy)
+            llama_token token = sample_token_greedy(g_ctx, g_model);
+
+            // b) Stop if EOS
+            const llama_vocab * vocab = llama_model_get_vocab(g_model);
+
+            llama_token eos = llama_vocab_eos(vocab);
+            if (token == eos) {
+                break;
+            }
+
+            // c) Convert token to text and append
+            char    buf[512];  // plenty for a single token piece
+            int32_t len = llama_token_to_piece(
+                vocab, token, buf, (int32_t) sizeof(buf),
+                /* lstrip */ 0,
+                /* special */ true  // or false, depending on whether you want special tokens rendered
+            );
+
+            if (len > 0) {
+                output.append(buf, len);
+
+                // copy partial output into task->result in a threadsafe way
+                {
+                    std::lock_guard<std::mutex> lock(g_taskMutex);
+                    task->result = output;
+                }
+            }
+
+            task->generated_tokens++;
+
+            // d) feed token back in using llama_batch
+            llama_batch tok_batch = {};
+            tok_batch.n_tokens    = 1;
+            tok_batch.token       = &token;
+            tok_batch.pos         = nullptr;
+            tok_batch.seq_id      = nullptr;
+            tok_batch.n_seq_id    = nullptr;
+            tok_batch.logits      = nullptr;
+
+            if (llama_decode(g_ctx, tok_batch) != 0) {
+                task->result = "[ERROR: llama_decode failed during generation]";
+                task->status = TASK_ERROR;
+                return;
+            }
+        }
+
+        task->result = output;
         task->status = TASK_FINISHED;
-    } catch (...) {
+    } catch (...)
+    {
+        task->result = "[EXCEPTION: generation crashed]";
         task->status = TASK_ERROR;
     }
 }
@@ -127,14 +267,15 @@ __declspec(dllexport) int llm_query(const char * prompt) {
 
     int id = g_nextId++;
 
-    auto task    = std::make_unique<LLMTask>();
-    task->id     = id;
-    task->prompt = prompt;
-    task->status = TASK_QUEUED;
+    auto task              = std::make_unique<LLMTask>();
+    task->id               = id;
+    task->prompt           = prompt;
+    task->status           = TASK_QUEUED;
+    task->max_tokens       = 512;  // same value you use in run_task
+    task->generated_tokens = 0;
 
     LLMTask * raw = task.get();
 
-    // Launch background thread
     raw->worker = std::thread([raw]() { run_task(raw); });
     raw->worker.detach();
 
@@ -143,7 +284,12 @@ __declspec(dllexport) int llm_query(const char * prompt) {
     return id;
 }
 
-__declspec(dllexport) int llm_get_answer(int query_id, char * buffer, int buffer_size) {
+
+__declspec(dllexport) int llm_get_answer(int    query_id,
+                                         char * buffer,
+                                         int    buffer_size,
+                                         int *  out_generated_tokens,
+                                         int *  out_max_tokens) {
     std::lock_guard<std::mutex> lock(g_taskMutex);
 
     auto it = g_tasks.find(query_id);
@@ -153,33 +299,34 @@ __declspec(dllexport) int llm_get_answer(int query_id, char * buffer, int buffer
 
     LLMTask * task = it->second.get();
 
-    if (task->status == TASK_RUNNING || task->status == TASK_QUEUED) {
-        return TASK_RUNNING;
-    }
-
-    if (task->status == TASK_ERROR) {
-        return TASK_ERROR;
-    }
-
-    if (task->status == TASK_FINISHED) {
-        // Copy result
+    // Write current text, even if still running
+    if (buffer && buffer_size > 0) {
         int len = (int) task->result.size();
-        if (buffer && buffer_size > 0) {
-            if (len >= buffer_size) {
-                len = buffer_size - 1;
-            }
-            memcpy(buffer, task->result.c_str(), len);
-            buffer[len] = '\0';
+        if (len >= buffer_size) {
+            len = buffer_size - 1;
         }
-
-        // Remove task from dictionary
-        g_tasks.erase(it);
-
-        return TASK_FINISHED;
+        std::memcpy(buffer, task->result.data(), len);
+        buffer[len] = '\0';
     }
 
-    return TASK_ERROR;
+    if (out_generated_tokens) {
+        *out_generated_tokens = task->generated_tokens;
+    }
+
+    if (out_max_tokens) {
+        *out_max_tokens = task->max_tokens;
+    }
+
+    LLMTaskStatus status = task->status;
+
+    // If finished or errored, remove task after copying
+    if (status == TASK_FINISHED || status == TASK_ERROR) {
+        g_tasks.erase(it);
+    }
+
+    return (int) status;
 }
+
 
 __declspec(dllexport) void llm_shutdown() {
     // NOTE: We cannot safely join detached threads,
