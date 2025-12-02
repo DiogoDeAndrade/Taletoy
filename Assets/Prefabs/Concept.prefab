@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8667317167587904904}
   - component: {fileID: 6692243114575156483}
   - component: {fileID: 8304315972149535390}
-  - component: {fileID: 5106040286189553488}
+  - component: {fileID: 6168045858181717641}
   m_Layer: 0
-  m_Name: Icon
+  m_Name: Concept
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,8 +82,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7424925958917402456, guid: 741f551847d44bc4695a6965cb15d1d8, type: 3}
-  m_Color: {r: 0.8862745, g: 0.66171426, b: 0.25490195, a: 1}
+  m_Sprite: {fileID: 605842004749471161, guid: 741f551847d44bc4695a6965cb15d1d8, type: 3}
+  m_Color: {r: 0.41568628, g: 0.30980393, b: 0.7490196, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -132,7 +132,7 @@ MonoBehaviour:
     height: 1
   separateForInteraction: 0
   colliderTypeForInteraction: 1
---- !u!114 &5106040286189553488
+--- !u!114 &6168045858181717641
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -141,6 +141,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 205918730475428648}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd1caea2e7c25648880d05e3f4b965d, type: 3}
+  m_Script: {fileID: 11500000, guid: 2471c8bd76ab43e4dae7fd055a14d1e8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Icon
+  m_EditorClassIdentifier: Assembly-CSharp::Concept
+  def: {fileID: -8078481075558871449, guid: a59a0195fe4fe7941af7563f8593c604, type: 3}

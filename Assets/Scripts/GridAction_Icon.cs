@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class GridAction_Icon : GridActionContainer
 {
-    IconDef iconDef;
+    ConceptDef iconDef;
 
     protected override void Start()
     {
         base.Start();
         
-        var icon = GetComponent<Icon>();
+        var icon = GetComponent<Concept>();
         iconDef = icon.GetDef();
     }
 

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using UC;
 using UnityEngine;
 
@@ -29,6 +31,7 @@ public class Player : MonoBehaviour
     private GridSystem      gridSystem;
     private List<Action>    availableActions;
     private ActionsPanel    actionsPanel;
+    private LevelManager    levelManager;
 
     public int age => _age;
     public bool isDead => _isDead;
@@ -43,12 +46,21 @@ public class Player : MonoBehaviour
 
         gridObject = GetComponent<GridObject>();
         gridObject.onMoveEnd += GridObject_onMoveEnd;
+        gridObject.onTurnTo += GridObject_onTurnTo;
 
         gridSystem = GetComponentInParent<GridSystem>();
 
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         actionsPanel = FindFirstObjectByType<ActionsPanel>();
+
+        levelManager = FindFirstObjectByType<LevelManager>();
+        levelManager?.SpawnElements();
+    }
+
+    private void GridObject_onTurnTo(Vector2Int sourcePos, Vector2Int destPos)
+    {
+        RefreshActions();
     }
 
     private void GridObject_onMoveEnd(Vector2Int sourcePos, Vector2Int destPos, bool success)
@@ -61,10 +73,17 @@ public class Player : MonoBehaviour
             float f = Random.Range(0.0f, 1.0f);
             if (f < deathProbabilityWalk)
             {
+                //Debug.Log($"Death Walking: {f} < {deathProbabilityWalk}");
                 Die(deathByWalking);
             }
         }
 
+        RefreshActions();
+    }
+
+    void RefreshActions()
+    {
+        HandleOptions();
         actionsPanel?.RefreshActions();
     }
 
@@ -73,9 +92,21 @@ public class Player : MonoBehaviour
         _age += years;
         deathProbability += Globals.incDeathProbability * years * deathProbabilityModifier;
         deathProbabilityWalk += Globals.incDeathProbabilityWalk * years * deathProbabilityModifier;
+
+        //Debug.Log($"Current death prob: walk = {deathProbabilityWalk}, action O {deathProbability}");
     }
 
     void Die(Hypertag deathReason)
+    {
+        lifeEvents.Add(new LifeEvent(LifeEvent.Type.Death, _age)
+        {
+            deathReason = deathReason
+        });
+
+        DeathEffect();
+    }
+
+    void DeathEffect()
     {
         _isDead = true;
 
@@ -84,11 +115,6 @@ public class Player : MonoBehaviour
 
         var gridMovement = GetComponent<MovementGridXY>();
         gridMovement.enabled = false;
-
-        lifeEvents.Add(new LifeEvent(LifeEvent.Type.Death, _age)
-        {
-            deathReason = deathReason
-        });
 
         string lifeText = ConvertLifeEventsToText();
 
@@ -168,16 +194,19 @@ public class Player : MonoBehaviour
 
     public List<Action> GetActions() => availableActions;
 
-    public void AddEvent(IconDef iconDef, IconAction action)
+    public void AddEvent(ConceptDef iconDef, IconAction action)
     {
         float f = Random.Range(0.0f, 1.0f) * action.dangerMultiplier;
         if (f < deathProbability)
         {
+            //Debug.Log($"Death performing action: {f} < {deathProbability} (multiplier = {action.dangerMultiplier})");
+
             lifeEvents.Add(new LifeEvent(LifeEvent.Type.ActionDeath, _age)
             {
                 action = action,
                 iconDef = iconDef
             });
+            DeathEffect();
         }
         else
         {
@@ -190,12 +219,14 @@ public class Player : MonoBehaviour
 
         deathProbability += action.deltaDanger;
         deathProbabilityWalk += action.deltaDanger;
+
+        //Debug.Log($"Delta danger = {action.deltaDanger}");
     }
 
     public void CompleteAction()
     {
-        HandleOptions();
-        actionsPanel?.RefreshActions();
+        RefreshActions();
+        levelManager?.SpawnElements();
     }
 
     public bool HasEventWithCategories(Hypertag[] categories)
@@ -214,5 +245,50 @@ public class Player : MonoBehaviour
         }
 
         return false;
+    }
+
+    public (string text, Color color) GetTitle()
+    {
+        var position = gridObject.GetPositionFacing();
+        var obj = gridSystem.GetFirstGridObjectAt(position);
+        if (obj == null)
+        {
+            ColorUtility.TryParseHtmlString("#3d368b", out var color);
+            return (null, color);
+        }
+        var concept = obj.GetComponent<Concept>();
+        if (concept == null)
+        {
+            ColorUtility.TryParseHtmlString("#3d368b", out var color);
+            return (null, color);
+        }
+
+        var def = concept.GetDef();
+        return (ToDisplayName(def.name), def.color);
+    }
+
+    public static string ToDisplayName(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+            return "";
+
+        // Replace underscores with spaces
+        string s = id.Replace('_', ' ');
+
+        // Insert spaces before capital letters (but not at the beginning)
+        s = Regex.Replace(s, "([a-z])([A-Z])", "$1 $2");
+
+        // Insert spaces between acronym sequences and normal words:
+        // "URLValue" -> "URL Value"
+        s = Regex.Replace(s, "([A-Z]+)([A-Z][a-z])", "$1 $2");
+
+        // Normalize multiple spaces
+        s = Regex.Replace(s, @"\s+", " ").Trim();
+
+        // Title case the whole thing
+        TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
+        s = ti.ToTitleCase(s.ToLower());
+
+        return s;
     }
 }

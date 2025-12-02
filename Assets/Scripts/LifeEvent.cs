@@ -10,7 +10,7 @@ public class LifeEvent
     public Type         type;
     public int          age;
     public Hypertag     deathReason;
-    public IconDef      iconDef;
+    public ConceptDef      iconDef;
     public IconAction   action;
 
     public LifeEvent(Type type, int age)

@@ -1,0 +1,39 @@
+*ForbiddenKnowledge:
+  icon(scroll)
+  categories(knowledge, mystery)
+  color(#6A4FBF)
+  action(Read, [1-3], IncreaseDanger(0.2))
+  action(Seek, 2)
+  touch_death(Overwhelmed)
+
+*LoyalCompanion:
+  icon(dog)
+  categories(ally, animal, feelings)
+  color(#C28E5A)
+  action(Befriend, 1)
+  action(Protect, [1-2], IncreaseDanger(0.1))
+  action(Abandon, 1)
+
+*MaterialWealth:
+  icon(money bill)
+  categories(value, economy)
+  color(#3CAF7C)
+  action(Earn, [1-5])
+  action(Spend, 1)
+  action(Steal, [1-3], IncreaseDanger(0.2))
+
+*InnerFear:
+  icon(ghost)
+  categories(feelings, abstract)
+  color(#8E8ECC)
+  action(Face, [1-2])
+  action(Feed, 1, IncreaseDanger(0.1))
+  action(Overcome, [2-4])
+
+*Rebellion:
+  icon(flag)
+  categories(society, ideology)
+  color(#D9534F)
+  action(Join, 1)
+  action(Lead, [2-5], IncreaseDanger(0.3))
+  action(Suppress, [1-3])

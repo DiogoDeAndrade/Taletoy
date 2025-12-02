@@ -4,7 +4,7 @@ using UC;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "IconDef", menuName = "Taletoy/Icon Def")]
-public class IconDef : ScriptableObject
+public class ConceptDef : ScriptableObject
 {
     public Sprite           sprite;
     public List<Hypertag>   categories;

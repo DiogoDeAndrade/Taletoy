@@ -25,13 +25,13 @@ public class TaletoyIconsImporter : ScriptedImporter
         // ----------------------------------------------------------------
         // 1) Create root as main asset
         // ----------------------------------------------------------------
-        var root = ScriptableObject.CreateInstance<TaleToyIconCollection>();
+        var root = ScriptableObject.CreateInstance<ConceptCollection>();
         root.name = Path.GetFileNameWithoutExtension(ctx.assetPath);
 
         ctx.AddObjectToAsset("Root", root);
         ctx.SetMainObject(root);
 
-        var collectionIcons = new List<IconDef>();
+        var collectionIcons = new List<ConceptDef>();
 
         // ----------------------------------------------------------------
         // 2) Hypertag cache (per file) -> all tags are subassets of root
@@ -70,7 +70,7 @@ public class TaletoyIconsImporter : ScriptedImporter
 
         foreach (var data in parsedIcons)
         {
-            var iconDef = ScriptableObject.CreateInstance<IconDef>();
+            var iconDef = ScriptableObject.CreateInstance<ConceptDef>();
             iconDef.name = data.Name;
             iconDef.sprite = Globals.GetSpriteByName(data.IconSpriteName);
             if (iconDef.sprite == null && !string.IsNullOrEmpty(data.IconSpriteName))

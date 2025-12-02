@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UC;
 using UnityEngine;
 
 public class ActionsPanel : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI    title;
     [SerializeField] private RectTransform      container;
     [SerializeField] private ActionPanelElement actionPrefab;
 
@@ -35,6 +37,18 @@ public class ActionsPanel : MonoBehaviour
             Destroy(action.gameObject);
         }
         actionPanelElements.Clear();
+
+        (string titleText, Color color) = player.GetTitle();
+        if (string.IsNullOrEmpty(titleText))
+        {
+            title.gameObject.SetActive(false);
+        }
+        else
+        {
+            title.gameObject.SetActive(true);
+            title.text = titleText;
+            title.color = color;
+        }
 
         var actions = player.GetActions();
         if ((actions != null) && (actions.Count > 0)) 

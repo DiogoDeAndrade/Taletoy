@@ -1,9 +1,9 @@
 using UC;
 using UnityEngine;
 
-public class Icon : MonoBehaviour
+public class Concept : MonoBehaviour
 {
-    [SerializeField] private IconDef def;
+    [SerializeField] private ConceptDef def;
 
     SpriteRenderer  spriteRenderer;
     GridCollider    gridCollider;
@@ -41,5 +41,9 @@ public class Icon : MonoBehaviour
     }
 #endif
 
-    public IconDef GetDef() => def;
+    public ConceptDef GetDef() => def;
+    public void Set(ConceptDef def)
+    {
+        this.def = def;
+    }
 }

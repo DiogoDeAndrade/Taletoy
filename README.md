@@ -15,6 +15,7 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 * Add combat text
 * Integrate LLM to write story
 * UI to select style
+* Balance death probabilities
 
 ## Art
 

@@ -18,3 +18,11 @@
   action(Hug, [1-3]) # This defines an action called Hug, and it should have a duration of of between 1 and 3 years
   action(Cut, [2-6], RequireCategory(axe, bladed), RequireAge(16)) # This action will have a condition and can only be run if the age is more than 16 years, and if an event with either the axe or bladed category has been executed before
   action(Talk, 1)
+
+*ConceptOfHappyness:
+  icon(emote happy)        
+  categories(feelings)   
+  color(#FFFF00)      
+  action(Embrace, 1)
+  action(Reject, 1)
+  
