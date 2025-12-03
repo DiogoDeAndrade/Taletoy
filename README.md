@@ -12,7 +12,6 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 ## Todo
 
 * Finetune a small model
-* Credits
 
 ## Tech stuff regarding the LLM
 
