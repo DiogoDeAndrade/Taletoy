@@ -116,6 +116,9 @@ public class Player : MonoBehaviour
         var gridMovement = GetComponent<MovementGridXY>();
         gridMovement.enabled = false;
 
+        var storyManager = FindFirstObjectByType<StoryManager>();
+        storyManager?.StartStory(lifeEvents);
+
         string lifeText = ConvertLifeEventsToText();
 
         Debug.Log(lifeText);

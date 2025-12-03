@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UC;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
 public class LevelManager : MonoBehaviour
@@ -111,5 +112,21 @@ public class LevelManager : MonoBehaviour
         conceptInstance.Set(concepts.Get());
 
         activeConcepts.Add(conceptInstance);
+    }
+
+    public void GotoMainMenu()
+    {
+        FullscreenFader.FadeOut(0.5f, Color.black, () =>
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        });
+    }
+
+    public void ResetLevel()
+    {
+        FullscreenFader.FadeOut(0.5f, Color.black, () =>
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        });
     }
 }
