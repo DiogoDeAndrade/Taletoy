@@ -13,11 +13,12 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 
 * Build icons/actions - LLM (ongoing)
 * Integrate LLM to write story
-  * Cancel query
-  * Detect story done (```</story>```) element
   * Add adaptability to different cards based on VRAM
-* UI to select style of story
-* Balance death probabilities
+* Add options on menu for LLM parameters
+  * Temperature
+  * LLM model
+  * Story style
+* Balance death probabilities (dying too fast)
 
 ## Tech stuff regarding the LLM
 
