@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42491f90e3b9d9c4db7fa470746453ce, type: 3}
+  m_Name: BuildDefs
+  m_EditorClassIdentifier: Assembly-CSharp::UC.BuildDefs
+  version: 1.0.0
+  username: diogoandrade
+  projectName: taletoy
+  buildWindows: 1
+  buildWeb: 0
+  createZipFiles: 1
+  uploadToItch: 1
+  ignoreFilePatterns:
+  - Models/Meta-Llama-3.1-8B-Instruct-Q4_K_L.gguf
+  - Models/Phi-3-mini-4k-instruct-q4.gguf
+  - Models/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf
+  - Models/qwen2.5-0.5b-instruct-q5_k_m.gguf

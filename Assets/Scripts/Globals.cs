@@ -13,6 +13,7 @@ public class Globals : GlobalsBase
     [SerializeField] private float  _startDeathProbability = -0.2f;
     [SerializeField] private float  _incDeathProbabilityWalk = 0.015f;
     [SerializeField] private float  _incDeathProbability = 0.02f;
+    [SerializeField] private float  _ageMultiplier = 1.0f;
     [SerializeField] private Hypertag   _playerTag;
     [SerializeField] private Sprite[]   _sprites;
 
@@ -58,6 +59,7 @@ public class Globals : GlobalsBase
     public static float startDeathProbability => instance._startDeathProbability;
     public static float incDeathProbabilityWalk => instance._incDeathProbabilityWalk;
     public static float incDeathProbability => instance._incDeathProbability;
+    public static float ageMultiplier => instance._ageMultiplier;
     public static Hypertag playerTag => instance._playerTag;
     public static Sprite GetSpriteByName(string name) => instance._GetSpriteByName(name);
 }

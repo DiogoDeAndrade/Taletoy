@@ -3,6 +3,7 @@ using UC;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+using NaughtyAttributes;
 
 public class LevelManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Concept            conceptPrefab;
     [SerializeField] private float              baseElementCount = 3.0f;
     [SerializeField] private float              elementsPerYear = 0.075f;
+    [SerializeField, Scene] private string      mainMenu;
 
     Player                  player;
     List<Concept>           activeConcepts = new();
@@ -118,7 +120,7 @@ public class LevelManager : MonoBehaviour
     {
         FullscreenFader.FadeOut(0.5f, Color.black, () =>
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene(mainMenu);
         });
     }
 

@@ -73,7 +73,7 @@ public class GridAction_Icon : GridActionContainer
 
         CombatTextManager.SpawnText(player.gameObject, str, color, color.ChangeAlpha(0.0f), 2.0f);
 
-        player.IncAge(conceptAction.actionDuration.Random());
+        player.IncAge(Mathf.CeilToInt(conceptAction.actionDuration.Random() * Globals.ageMultiplier));
         player.AddEvent(iconDef, conceptAction);
 
         Destroy(gameObject);

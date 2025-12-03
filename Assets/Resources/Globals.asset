@@ -18,10 +18,11 @@ MonoBehaviour:
   _healthResource: {fileID: 0}
   _weaponSlot: {fileID: 0}
   _startAge: 4
-  _startDeathProbabilityWalk: -0.3
-  _startDeathProbability: -0.2
-  _incDeathProbabilityWalk: 0.005
-  _incDeathProbability: 0.02
+  _startDeathProbabilityWalk: -0.5
+  _startDeathProbability: -0.3
+  _incDeathProbabilityWalk: 0.0025
+  _incDeathProbability: 0.01
+  _ageMultiplier: 2
   _playerTag: {fileID: 11400000, guid: c3b5014a70ad2134cb0f46f150974eaa, type: 2}
   _sprites:
   - {fileID: 5189423128798394655, guid: 741f551847d44bc4695a6965cb15d1d8, type: 3}

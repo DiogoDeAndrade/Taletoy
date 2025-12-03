@@ -45,3 +45,746 @@
   action(Gather[gathered], [1-3])
   action(Tend[tended], [1-2])
   action(Trade[traded], [1-3], RequireCategory(resource))
+
+*FirstLove:
+  icon(heart)
+  categories(feelings, relationships)
+  color(#FF7799)
+  action(Confess[confessed], 1)
+  action(Adore[adored], [1-3])
+  action(Forget[forgot], [1-2])
+
+*LingeringMemory:
+  icon(portrait old man)
+  categories(memories, feelings)
+  color(#888866)
+  action(Reminisce[reminisced], [1-4])
+  action(Archive[archived], 1)
+  action(Erase[erased], 1)
+
+*SuddenOpportunity:
+  icon(key)
+  categories(abstract, opportunity)
+  color(#FFD94A)
+  action(Grasp[grasped], 1)
+  action(Prepare[prepared], [1-2])
+  action(Decline[declined], 1)
+
+*TemptingGreed:
+  icon(gold pile)
+  categories(feelings, desire)
+  color(#FFCC33)
+  action(Hoard[hoarded], [1-3])
+  action(Spend[spent], 1)
+  action(Resist[resisted], [1-2])
+
+*QuietSolitude:
+  icon(stool)
+  categories(feelings, mental)
+  color(#99AACC)
+  action(Meditate[meditated], [1-4])
+  action(Rest[rested], 1)
+  action(Withdraw[withdrew], [1-2])
+
+*RebellionSpark:
+  icon(flag)
+  categories(social, politics)
+  color(#CC3333)
+  action(Defy[defied], 1)
+  action(Rally[rallied], [1-3])
+  action(Sabotage[sabotaged], 1, RequireCategory(metal))
+
+*HiddenTruth:
+  icon(mirror)
+  categories(knowledge, insight)
+  color(#DDEEFF)
+  action(Inspect[inspected], 1)
+  action(Uncover[uncovered], [1-3])
+  action(AcceptTruth[accepted truth], 1)
+
+*FleetingTime:
+  icon(hourglass)
+  categories(abstract)
+  color(#C2A673)
+  action(Reflect[reflected], [1-2])
+  action(Rush[rushed], 1)
+  action(Preserve[preserved], [2-3])
+
+*EarlyFriendship:
+  icon(portrait boy)
+  categories(relationships, social)
+  color(#66AAEE)
+  action(Befriend[befriended], 1)
+  action(Support[supported], [1-3])
+  action(GrowApart[grew apart], [1-2])
+
+*InnerStrength:
+  icon(strong man)
+  categories(mental, growth)
+  color(#AA8833)
+  action(Endure[endured], [1-4])
+  action(Train[trained], [1-3])
+  action(Unleash[unleashed strength], 1)
+
+*DreamOfFlight:
+  icon(rocket)
+  categories(dreams, future)
+  color(#77DDEE)
+  action(Imagine[imagined], 1)
+  action(Attempt[attempted], [2-3], RequireCategory(knowledge))
+  action(Ascend[ascended], [3-5])
+
+*AncientCurse:
+  icon(skull)
+  categories(arcane, dangerous)
+  color(#884444)
+  action(Invoke[invoked], 1)
+  action(Seal[sealed], [1-3])
+  action(Study[studied], [1-3], RequireCategory(knowledge))
+  touch_death(Cursebound)
+
+*SacredPromise:
+  icon(ring)
+  categories(feelings, vows)
+  color(#FFDDEE)
+  action(Swear[swore], 1)
+  action(Keep[kept promise], [2-4])
+  action(Break[broke promise], 1)
+
+*HarshReality:
+  icon(solid block)
+  categories(abstract)
+  color(#666666)
+  action(Face[faced], [1-2])
+  action(Adapt[adapted], [2-3])
+  action(Collapse[collapsed], 1)
+
+*MythicalEncounter:
+  icon(mermaid)
+  categories(myth, fantasy)
+  color(#99EEDD)
+  action(Observe[observed], 1)
+  action(Interact[interacted], [1-3])
+  action(Befriend[befriended], [2-4])
+
+*UnfinishedWork:
+  icon(folder)
+  categories(social, task)
+  color(#99AABB)
+  action(Start[started], 1)
+  action(Continue[continued], [1-4])
+  action(Abandon[abandoned], 1)
+
+*FragileTrust:
+  icon(necklace)
+  categories(relationships)
+  color(#FFBBCC)
+  action(Build[built trust], [1-3])
+  action(Test[tested trust], [1-2])
+  action(Break[ broke trust], 1)
+
+*FierceAmbition:
+  icon(winner cup)
+  categories(dreams, competition)
+  color(#FFD700)
+  action(Chase[chased], [1-4])
+  action(Compete[competed], 1)
+  action(Overreach[overreached], [1-2])
+
+*AncientWisdom:
+  icon(bookcase)
+  categories(knowledge, history)
+  color(#AA9977)
+  action(Study[studied], [1-3])
+  action(Interpret[interpreted], [1-2])
+  action(Forget[forgot], 1)
+
+*LuckOfTheDraw:
+  icon(dice3)
+  categories(chance)
+  color(#FFFFFF)
+  action(Roll[rolled], 1)
+  action(Risk[risked], [1-2])
+  action(TrustLuck[trusted luck], [1-3])
+
+*BrokenBoundary:
+  icon(fence)
+  categories(conflict)
+  color(#884400)
+  action(Cross[crossed], 1)
+  action(Mend[mended], [1-3])
+  action(Defend[defended], [1-2])
+
+*SilentFear:
+  icon(moth)
+  categories(feelings, anxiety)
+  color(#665577)
+  action(Shiver[shivered], 1)
+  action(Avoid[avoided], [1-2])
+  action(Confront[confronted], [2-3], RequireCategory(insight))
+
+*HonestWork:
+  icon(worker)
+  categories(social, labor)
+  color(#CCCC55)
+  action(Work[worked], [1-4])
+  action(Strive[strived], [1-2])
+  action(Rest[rested], 1)
+
+*CosmicWonder:
+  icon(globes)
+  categories(knowledge, cosmic)
+  color(#55BBAA)
+  action(Stargaze[stargazed], 1)
+  action(Theorize[theorized], [1-3])
+  action(Discover[discovered], [2-4])
+
+*GuidingLight:
+  icon(torch)
+  categories(spiritual, insight)
+  color(#FFDD99)
+  action(Follow[followed], 1)
+  action(Shine[shone light], [1-3])
+  action(Wane[waned], [1-2])
+
+*RighteousWrath:
+  icon(imp)
+  categories(feelings, conflict)
+  color(#CC3333)
+  action(Rage[raged], 1)
+  action(Strike[struck], [1-2])
+  action(Restrain[restrained], [1-3])
+
+*OldTradition:
+  icon(grandfather)
+  categories(history, social)
+  color(#BBAA88)
+  action(Respect[respected], 1)
+  action(Follow[followed], [1-3])
+  action(Reject[rejected], 1)
+
+*RestlessNight:
+  icon(bed)
+  categories(feelings, fatigue)
+  color(#223355)
+  action(Toss[tossed and turned], 1)
+  action(Dream[dreamed], [1-3])
+  action(Insomnia[suffered insomnia], 1)
+
+*HumbleBeginning:
+  icon(house)
+  categories(origin, social)
+  color(#AA9966)
+  action(StartLife[started life], 1)
+  action(BuildHome[built home], [2-4])
+  action(Leave[left home], 1)
+
+*OutlawReputation:
+  icon(cowboy)
+  categories(social, danger)
+  color(#BB5522)
+  action(Rebel[rebelled], [1-3])
+  action(Duel[dueled], 1)
+  action(LieLow[lay low], [1-2])
+
+*FragileHope:
+  icon(emote sad)
+  categories(feelings)
+  color(#66AACC)
+  action(Hope[hoped], [1-3])
+  action(Doubt[doubted], 1)
+  action(Renew[renewed hope], [1-2])
+
+*ForbiddenDesire:
+  icon(devil)
+  categories(feelings, dangerous)
+  color(#AA0033)
+  action(Yearn[yearned], [1-3])
+  action(Pursue[pursued], 1)
+  action(Resist[resisted], 1)
+  touch_death(Consumed)
+
+*WoundedPride:
+  icon(crown)
+  categories(feelings)
+  color(#CCAA44)
+  action(Boast[boasted], 1)
+  action(HideWound[hid wound], 1)
+  action(Recover[recovered pride], [1-3])
+
+*NatureBond:
+  icon(tree)
+  categories(nature, growth)
+  color(#55CC55)
+  action(Nurture[nurtured], [1-3])
+  action(StudyNature[studied nature], [1-2])
+  action(Harmonize[harmonized], [2-4])
+
+*MomentOfCourage:
+  icon(strong man)
+  categories(feelings, growth)
+  color(#FFAA55)
+  action(StandFirm[stood firm], 1)
+  action(Charge[charged], 1)
+  action(Overcome[overcame], [1-3])
+
+*QuietCuriosity:
+  icon(egg)
+  categories(feelings, insight)
+  color(#FFFFCC)
+  action(Observe[observed], 1)
+  action(Investigate[investigated], [1-3])
+  action(Discover[discovered], [2-4])
+
+*EphemeralJoy:
+  icon(emote laugh)
+  categories(feelings)
+  color(#FFEE88)
+  action(Laugh[laughed], 1)
+  action(Celebrate[celebrated], [1-2])
+  action(ChaseJoy[chased joy], [1-3])
+
+*ColdLogic:
+  icon(computer) # Not in list—must fix with an existing sprite, choose "machine-like": use "spaceship"
+  icon(spaceship)
+  categories(knowledge, logic)
+  color(#99CCFF)
+  action(Calculate[calculated], 1)
+  action(Analyze[analyzed], [1-3])
+  action(Conclude[concluded], 1)
+
+*UnspokenWords:
+  icon(say love)
+  categories(relationships, feelings)
+  color(#FF99AA)
+  action(Withhold[withheld words], 1)
+  action(Express[expressed], 1)
+  action(Bottle[bottled up], [1-2])
+
+*DistantAmbition:
+  icon(tank)
+  categories(dreams, future)
+  color(#669999)
+  action(Plan[planned], [1-3])
+  action(PushForward[pushed forward], [2-4])
+  action(Reconsider[reconsidered], 1)
+
+*HardChoice:
+  icon(lever)
+  categories(decision)
+  color(#CCCCCC)
+  action(Choose[chose], 1)
+  action(Hesitate[hesitated], 1)
+  action(Commit[committed], [1-2])
+
+*LostInThought:
+  icon(wizard)
+  categories(feelings, mental)
+  color(#7755AA)
+  action(Think[thought deeply], [1-3])
+  action(Drift[drifted], 1)
+  action(Focus[focused], [1-2])
+
+*UnexpectedLoss:
+  icon(grave)
+  categories(feelings, trauma)
+  color(#555555)
+  action(Grieve[grieved], [1-4])
+  action(Honor[honored], [1-2])
+  action(Forget[forgot], 1)
+
+*SharedSecret:
+  icon(whisper) # Not in list—choose a valid one: use "folder"
+  icon(folder)
+  categories(relationships)
+  color(#AA77CC)
+  action(Share[shared], 1)
+  action(KeepSecret[kept secret], [1-3])
+  action(Betray[betrayed], 1)
+
+*BurningPassion:
+  icon(fire)
+  categories(feelings, desire)
+  color(#FF5522)
+  action(Ignite[ignited], 1)
+  action(Fuel[fueled], [1-3])
+  action(Consume[got consumed], 1)
+  touch_death(BurnedOut)
+
+*PathOfDiscovery:
+  icon(map)
+  categories(knowledge, journey)
+  color(#44AA99)
+  action(Search[searched], [1-3])
+  action(Learn[learned], [1-4])
+  action(Wander[wandered], [1-2])
+
+*OldAxe:
+  icon(axe)
+  categories(metal, tool, bladed)
+  color(#BBBBBB)
+  action(Swing[swung], 1)
+  action(Sharpen[sharpened], [1-2])
+  action(Break[broken], 1)
+
+*WoodenBat:
+  icon(bat)
+  categories(weapon, wood)
+  color(#AA7744)
+  action(Swing[swung], 1)
+  action(Tape[taped], 1)
+  action(AccidentallyHit[hit accidentally], 1)
+
+*BattleAxeRelic:
+  icon(battleaxe)
+  categories(weapon, metal, bladed)
+  color(#999999)
+  action(Wield[wielded], 1)
+  action(Polish[polished], 1)
+  action(Strike[struck], [1-2])
+
+*OldBazooka:
+  icon(bazooka)
+  categories(weapon, explosive)
+  color(#77AABB)
+  action(Aim[aimed], 1)
+  action(Fire[fired], 1)
+  action(Disassemble[disassembled], [1-2])
+  touch_death(Explosion)
+
+*CozyBed:
+  icon(bed)
+  categories(furniture)
+  color(#AA99CC)
+  action(Sleep[slept], [1-3])
+  action(Rest[rested], 1)
+  action(Jump[jumped], 1)
+
+*LeatherBelt:
+  icon(belt)
+  categories(clothing)
+  color(#8B572A)
+  action(Wear[wore], 1)
+  action(Tighten[tightened], 1)
+  action(Whip[whipped], 1)
+
+*FishingBoat:
+  icon(boat)
+  categories(vehicle, water)
+  color(#3377AA)
+  action(Sail[sailed], [1-3])
+  action(Fish[fished], [1-2])
+  action(Repair[repaired], 1)
+
+*SuspiciousBomb:
+  icon(bomb)
+  categories(explosive, dangerous)
+  color(#333333)
+  action(Defuse[defused], [1-2], RequireCategory(knowledge))
+  action(Throw[threw], 1)
+  touch_death(Explosion)
+
+*BoneFragment:
+  icon(bone)
+  categories(material)
+  color(#DDDDCC)
+  action(Examine[examined], 1)
+  action(Carve[carved], [1-2])
+  action(Discard[discarded], 1)
+
+*HeavyBookcase:
+  icon(bookcase)
+  categories(furniture)
+  color(#AA8855)
+  action(Organize[organized], [1-3])
+  action(Dust[dusted], 1)
+  action(TipOver[tipped over], 1)
+
+*ExplorerBoots:
+  icon(boots)
+  categories(clothing)
+  color(#775533)
+  action(Wear[wore], 1)
+  action(Travel[traveled], [1-4])
+  action(Repair[repaired], 1)
+
+*HuntingBow:
+  icon(bow)
+  categories(weapon, wood)
+  color(#AA7744)
+  action(Draw[drew], 1)
+  action(Shoot[shot], 1)
+  action(Restring[restrung], 1)
+
+*RustyCoin:
+  icon(coin)
+  categories(currency)
+  color(#CCAA55)
+  action(Flip[flipped], 1)
+  action(Save[saved], 1)
+  action(Spend[spent], 1)
+
+*BreadLoaf:
+  icon(bread loaf)
+  categories(food)
+  color(#DDBB77)
+  action(Eat[ate], 1)
+  action(Bake[baked], [1-2])
+  action(Share[shared], 1)
+
+*TravelerCar:
+  icon(car)
+  categories(vehicle)
+  color(#778899)
+  action(Drive[drove], [1-3])
+  action(Refuel[refueled], 1)
+  action(Repair[repaired], 1)
+
+*HillCastle:
+  icon(castle)
+  categories(structure)
+  color(#8888AA)
+  action(Explore[explored], [1-3])
+  action(Defend[defended], [1-2])
+  action(Restore[restored], 1)
+
+*StrayCat:
+  icon(cat)
+  categories(animal, nature)
+  color(#FFCC99)
+  action(Pet[petted], 1)
+  action(Feed[fed], 1)
+  action(Chase[chased], 1)
+
+*WitchCauldron:
+  icon(cauldron)
+  categories(magic, tool)
+  color(#333333)
+  action(Brew[brewed], [1-3])
+  action(Stir[stirred], 1)
+  action(Sniff[sniffed], 1)
+
+*WoodenChair:
+  icon(chair)
+  categories(furniture)
+  color(#AA7744)
+  action(Sit[sat], 1)
+  action(Fix[fixed], 1)
+  action(Throw[threw], 1)
+
+*CheeseWheel:
+  icon(cheese)
+  categories(food)
+  color(#FFEE55)
+  action(Eat[ate], 1)
+  action(Slice[sliced], 1)
+  action(Store[stored], 1)
+
+*TreasureChest:
+  icon(chest)
+  categories(storage, treasure)
+  color(#AA8855)
+  action(Open[opened], 1)
+  action(Lock[locked], 1)
+  action(Loot[looted], 1)
+
+*ChickenCompanion:
+  icon(chicken)
+  categories(animal, nature)
+  color(#FFFFFF)
+  action(Feed[fed], 1)
+  action(Chase[chased], 1)
+  action(Protect[protected], 1)
+
+*ClosedBag:
+  icon(closed bag)
+  categories(container)
+  color(#AA7744)
+  action(Open[opened], 1)
+  action(Store[stored], [1-2])
+  action(Lose[lost], 1)
+
+*ConvertibleCar:
+  icon(convertible)
+  categories(vehicle)
+  color(#FFCCCC)
+  action(Drive[drove], [1-3])
+  action(Cruise[cruised], 1)
+  action(Polish[polished], 1)
+
+*CowCompanion:
+  icon(cow)
+  categories(animal, nature)
+  color(#DDDDCC)
+  action(Milk[milked], 1)
+  action(Pet[petted], 1)
+  action(Guide[guided], 1)
+
+*FarmCrop:
+  icon(crop)
+  categories(nature, food)
+  color(#AACC55)
+  action(Grow[growed], [1-3])
+  action(Harvest[harvested], 1)
+  action(Water[watered], 1)
+
+*CrossBlock:
+  icon(cross block)
+  categories(symbol)
+  color(#CCCCCC)
+  action(Study[studied], 1)
+  action(Place[placed], 1)
+  action(Inscribe[inscribed], [1-2])
+
+*ReliableCrossbow:
+  icon(crossbow)
+  categories(weapon, wood, metal)
+  color(#887755)
+  action(Cock[cocked], 1)
+  action(Fire[fired], 1)
+  action(Maintain[maintained], 1)
+
+*RoyalCrown:
+  icon(crown)
+  categories(symbol, social)
+  color(#FFD700)
+  action(Wear[wore], 1)
+  action(Admire[admired], 1)
+  action(Aspire[aspired], [1-2])
+
+*ArcaneCrystal:
+  icon(crystal)
+  categories(magic, material)
+  color(#AAEEFF)
+  action(Channel[chanelled], [1-2])
+  action(Inspect[inspected], 1)
+  action(Shine[shone], 1)
+
+*WoodCupboard:
+  icon(cupboard)
+  categories(furniture, storage)
+  color(#AA7744)
+  action(Store[stored], [1-2])
+  action(Rearrange[rearranged], 1)
+  action(Polish[polished], 1)
+
+*DiceOfChance:
+  icon(dice2)
+  categories(game, chance)
+  color(#FFFFFF)
+  action(Roll[rolled], 1)
+  action(Risk[risked], 1)
+  action(Cheat[cheated], 1)
+
+*PetDog:
+  icon(dog)
+  categories(animal, companion)
+  color(#CCAA77)
+  action(Pet[petted], 1)
+  action(Train[trained], [1-2])
+  action(Play[played], 1)
+
+*HeavyDoor:
+  icon(door)
+  categories(structure)
+  color(#885533)
+  action(Open[opened], 1)
+  action(Close[closed], 1)
+  action(ForceOpen[forced open], 1)
+
+*WildDuck:
+  icon(duck)
+  categories(animal, nature)
+  color(#99CCFF)
+  action(Observe[observed], 1)
+  action(Feed[fed], 1)
+  action(Chase[chased], 1)
+
+*FreshEgg:
+  icon(egg)
+  categories(food)
+  color(#FFFFDD)
+  action(Crack[cracked], 1)
+  action(Cook[cooked], 1)
+  action(Eat[ate], 1)
+
+*AngryEmotion:
+  icon(emote angry)
+  categories(feelings)
+  color(#FF3333)
+  action(Express[expressed], 1)
+  action(Bottle[bottled up], 1)
+  action(Release[released], 1)
+
+*LaughingEmotion:
+  icon(emote laugh)
+  categories(feelings)
+  color(#FFEE99)
+  action(Laugh[laughed], 1)
+  action(Share[shared laughter], 1)
+  action(Stop[stopped laughing], 1)
+
+*SadEmotion:
+  icon(emote sad)
+  categories(feelings)
+  color(#6699CC)
+  action(Cry[cried], 1)
+  action(Reflect[reflected], [1-2])
+  action(Overcome[overcame], 1)
+
+*DedicatedFarmer:
+  icon(farmer)
+  categories(person)
+  color(#AA9933)
+  action(Till[tiled], 1)
+  action(Harvest[harvested], 1)
+  action(Teach[taught], 1)
+
+*WoodFence:
+  icon(fence)
+  categories(structure)
+  color(#AA7744)
+  action(Build[built], 1)
+  action(Mend[mended], [1-2])
+  action(JumpOver[jumped over], 1)
+
+*CampFire:
+  icon(fire)
+  categories(nature, danger)
+  color(#FF7722)
+  action(Warm[warmed], 1)
+  action(Fuel[fueled], 1)
+  action(Extinguish[extinguished], 1)
+  touch_death(Burned)
+
+*WarmFireplace:
+  icon(fireplace)
+  categories(furniture, warmth)
+  color(#AA5533)
+  action(WarmUp[warmed up], 1)
+  action(Tend[tended], 1)
+  action(Clean[cleaned], 1)
+
+*FreshFish:
+  icon(fish)
+  categories(food, animal)
+  color(#77AACC)
+  action(Catch[caught], 1)
+  action(Cleaned[cleaned], 1)
+  action(Eat[ate], 1)
+
+*WavingFlag:
+  icon(flag)
+  categories(symbol)
+  color(#DD3333)
+  action(Raise[raised], 1)
+  action(Salute[saluted], 1)
+  action(Lower[lowered], 1)
+
+*HeavyFolder:
+  icon(folder)
+  categories(storage, document)
+  color(#9988BB)
+  action(File[filed], 1)
+  action(Organize[organized], 1)
+  action(Lose[lost], 1)

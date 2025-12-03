@@ -110,7 +110,9 @@ static std::vector<llama_token> tokenize_prompt(llama_model * model, const std::
     return tokens;
 }
 
-void debug_message(const char * tmp) {
+void debug_message(const char * tmp)
+{
+#ifdef _DEBUG
     std::lock_guard<std::mutex> lock(g_logMutex);
 
     FILE * file = NULL;
@@ -128,6 +130,7 @@ void debug_message(const char * tmp) {
 
     fprintf(file, "%s\n", tmp);
     fclose(file);
+#endif
 }
 
 static llama_token sample_token_greedy(llama_context * ctx, const llama_vocab * vocab, LLMTask * task) {

@@ -47,6 +47,5 @@ A meaningful color (tone fitting the concept)
 Several actions with durations or ranges
 Optional lethal touch effects
 Make concepts story-rich, versatile, and suitable for wildly different genres.
-
-
+Make a mix of conceptual and actual physical concepts.
 When outputing the concepts, show it as code so that we can easily copy&paste it.

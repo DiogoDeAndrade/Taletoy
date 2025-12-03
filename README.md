@@ -11,14 +11,8 @@ This becomes the structured input for an LLM, which returns a stylized short sto
 
 ## Todo
 
-* Build icons/actions - LLM (ongoing)
-* Integrate LLM to write story
-  * Add adaptability to different cards based on VRAM
-* Add options on menu for LLM parameters
-  * Temperature
-  * LLM model
-  * Story style
-* Balance death probabilities (dying too fast)
+* Finetune a small model
+* Credits
 
 ## Tech stuff regarding the LLM
 
@@ -54,17 +48,24 @@ I'm using llama.cpp, so here's some information regarding how to compile
 
 ## Art
 
-- Font [Diary of an 8-bit mage](https://chequered.ink/product/diary-of-an-8-bit-mage/) by [Checkered Ink](https://chequered.ink/), purchased and under the [Checkered Ink License](https://chequered.ink/wp-content/uploads/2025/01/License-Agreement-All-Fonts-Pack.pdf)
+- Font [Infinite Grateful](https://chequered.ink/product/infinitely-grateful/) by [Checkered Ink](https://chequered.ink/), purchased and under the [Checkered Ink License](https://chequered.ink/wp-content/uploads/2025/01/License-Agreement-All-Fonts-Pack.pdf)
 - [1-bit Pack](https://kenney.nl/assets/1-bit-pack) by [Kenney](https://kenney.nl/), [CC0] license.
+- Photo [Photography of Book Page](https://www.pexels.com/photo/photography-of-book-page-1029141/) by [Nitin Arya](https://www.pexels.com/@nitin-arya-386173/), free to use
 - Everything else done by [Diogo de Andrade], [CC0] license.
 
-## Sound
+## Model
 
-- Music by [Suno](https://suno.com/)
-- Everything else done by [Diogo de Andrade], licensed through the [CC0] license.
+- Model [SmolLM2-135M-Instruct-Q6_K_L](https://huggingface.co/bartowski/SmolLM2-135M-Instruct-GGUF), [Apache2] license.
+- Quality is terrible for the game's purposes
+  - To be expected, the model is too small (140Mb, 135M params)- might work with fine-tunning (work for the future)
+- To use another model, just find one (I used mainly [Meta-Llama-3.1-8B-Instruct-Q4_K_L](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) (5Gb, 8B params) for my tests)
+  - Download the GGUF file and place it in the Taletoy_Data/StreamingAssets/Models directory.
+  - You can now select the model from the options on the game
+  - If you want to use it in Unity directly, just copy the GGUF to the StreamingAssets/Model directory and change the modelName on the StoryManager prefab.
 
 ## Code
 
+- Uses llama-cpp, [MIT] license.
 - Some code was adapted/refactored from [Okapi Kit], [MIT] license.
 - Uses [Unity Common], [MIT] license.
 - [NaughtyAttributes] by Denis Rizov available through the [MIT] license: https://github.com/dbrizov/NaughtyAttributes.git#upm
@@ -88,3 +89,4 @@ I'm using llama.cpp, so here's some information regarding how to compile
 [Fab Standard License]:https://www.fab.com/eula
 [SIL-OFL]:https://openfontlicense.org/open-font-license-official-text/
 [MIT]:LICENSE
+[Apache2]:https://www.apache.org/licenses/LICENSE-2.0

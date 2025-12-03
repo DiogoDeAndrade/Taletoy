@@ -1,0 +1,18 @@
+<size=150%>A toy by Diogo de Andrade
+
+<size=150%>Art
+Font Infinite Grateful by Checkered Ink, purchased and under the Checkered Ink License
+1-bit Pack by Kenney, CC0 license
+Photography of Book Page by Nitin Arya, free to use
+Everything else done by Diogo de Andrade, CC0 license
+
+<size=150%>Model
+Model SmolLM2-135M-Instruct-Q6_K_L made available by Colin Kealty, [Apache2] license
+
+<size=150%>Code
+Uses llama-cpp, MIT license
+Some code was adapted/refactored from Okapi Kit and UnityCommon library, MIT license
+All remaining game source code by Diogo de Andrade, MIT license
+
+Full game source available at https://github.com/DiogoDeAndrade/Taletoy
+with complete credits (links, licences, etc)
