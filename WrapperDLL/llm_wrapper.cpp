@@ -12,7 +12,92 @@
 #include <cfloat>
 #include <cmath>
 #include <cstdio>
+#include <cstdarg>
 #include "llama.h"
+    
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LOG STUFF
+//#define LOG_ENABLE
+//#define LOG_GENERATION
+//#define LOG_ANSWER
+//#define FORCE_CPU
+//#define FORCE_CONTEXT_SIZE 256
+
+static std::mutex g_logMutex;
+static bool       g_logInitialized = false;
+
+void Log(const char * fmt, ...)
+{
+#ifdef LOG_ENABLE
+    std::lock_guard<std::mutex> lock(g_logMutex);
+
+    FILE * file = nullptr;
+
+    // First call → write, subsequent → append
+    if (!g_logInitialized) {
+        file             = fopen("log.txt", "wt");
+        g_logInitialized = true;
+    } else {
+        file = fopen("log.txt", "at");
+    }
+
+    if (!file) {
+        return;
+    }
+
+    // Build formatted message
+    char    buffer[4096];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    va_end(args);
+
+    // Write to file
+    fprintf(file, "%s\n", buffer);
+    fflush(file);
+    fclose(file);
+#endif
+}
+
+void LogNoCR(const char * fmt, ...)
+{
+#ifdef LOG_ENABLE
+    std::lock_guard<std::mutex> lock(g_logMutex);
+
+    FILE * file = nullptr;
+
+    // First call → write, subsequent → append
+    if (!g_logInitialized) {
+        file             = fopen("log.txt", "wt");
+        g_logInitialized = true;
+    } else {
+        file = fopen("log.txt", "at");
+    }
+
+    if (!file) {
+        return;
+    }
+
+    // Build formatted message
+    char    buffer[4096];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    va_end(args);
+
+    // Write to file
+    fprintf(file, "%s", buffer);
+    fflush(file);
+    fclose(file);
+#endif
+}
+
+void llama_log_callback(enum ggml_log_level level, const char * text, void * user_data) {
+    // Forward to your existing logger
+    LogNoCR("[llama][%d] %s", (int) level, text);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 enum LLMInitStatus { LLM_INIT_OK = 0, LLM_INIT_ERROR = 1, LLM_INIT_MODEL_NOT_FOUND = 2 };
 
@@ -51,6 +136,7 @@ struct LLMTask {
     std::vector<llama_token> token_history;                   
     void clear()
     {
+        Log("Clearing LLM...");
         if (ctx)
         {
             llama_free(ctx);
@@ -80,16 +166,17 @@ static llama_model *                                     g_model  = nullptr;
 static std::mutex                                        g_llmMutex;
 static int                                               g_ContextSize = 2048;
 
-static std::mutex g_logMutex;
-static bool       g_logInit;
-
-static std::vector<llama_token> tokenize_prompt(llama_model * model, const std::string & text) {
-    if (text.empty()) {
+static std::vector<llama_token> tokenize_prompt(llama_model * model, const std::string & text)
+{
+    Log("Tokenizing prompt [%s]", text.c_str());
+    if (text.empty())
+    {
+        Log("\tPrompt is empty!");
         return {};
     }
 
     // Rough upper bound: length + 8
-    int32_t                  n_max_tokens = (int32_t) text.size() + 8;
+    int32_t                  n_max_tokens = (int32_t) text.size() + 8;   
     std::vector<llama_token> tokens(n_max_tokens);
 
     const llama_vocab * vocab = llama_model_get_vocab(model);
@@ -101,36 +188,18 @@ static std::vector<llama_token> tokenize_prompt(llama_model * model, const std::
                                       /* add_special */ true,
                                       /* parse_special */ false);
 
-    if (n_tokens < 0) {
+    if (n_tokens < 0)
+    {
         // Error
+        Log("\tError tokenizing!");
+
         return {};
     }
 
     tokens.resize(n_tokens);
+
+    Log("\tTokenized %i tokens...", n_tokens);
     return tokens;
-}
-
-void debug_message(const char * tmp)
-{
-#ifdef _DEBUG
-    std::lock_guard<std::mutex> lock(g_logMutex);
-
-    FILE * file = NULL;
-
-    if (g_logInit) {
-        fopen_s(&file, "log.txt", "at");
-    } else {
-        fopen_s(&file, "log.txt", "wt");
-        g_logInit = true;
-    }
-
-    if (file == NULL) {
-        return;
-    }
-
-    fprintf(file, "%s\n", tmp);
-    fclose(file);
-#endif
 }
 
 static llama_token sample_token_greedy(llama_context * ctx, const llama_vocab * vocab, LLMTask * task) {
@@ -259,27 +328,51 @@ static llama_token sample_token_temp_top_p(llama_context * ctx, const llama_voca
     return (llama_token) candidates.back().token;
 }
 
-static void run_task(LLMTask * task) {
+static void run_task(LLMTask * task)
+{
     task->status = TASK_RUNNING;
+
+    Log("Running gen task...");
 
     if (!g_model) {
         task->result = "[ERROR: model not initialized]";
+        Log("\nModel not initialized!");
         task->status = TASK_ERROR;
         return;
     }
 
+    Log("\nInitializing context...");
+
+    unsigned hw = std::thread::hardware_concurrency();
+    if (hw == 0)
+    {
+        hw = 4;  // fallback
+    }
+    if (hw > 16)
+    {
+        hw = 16;  // avoid silly values
+    }
+    Log("Using %u threads for context", hw);
+
     llama_context_params cparams = llama_context_default_params();
     cparams.n_ctx                = g_ContextSize;
-    cparams.n_threads            = std::thread::hardware_concurrency();
+    cparams.n_threads            = hw;
 
     task->ctx = llama_init_from_model(g_model, cparams);
-    if (!task->ctx) {
+    if (!task->ctx)
+    {
+        Log("\t[ERROR: cant build context]");
         task->result = "[ERROR: cant build context]";
         task->status = TASK_ERROR;
         return;
     }
 
-    try {
+    Log("\nContext initialized...");
+
+    try
+    {
+        Log("\nGet vocab...");
+
         const llama_vocab * vocab = llama_model_get_vocab(g_model);
 
         // ----------------------------------
@@ -288,6 +381,7 @@ static void run_task(LLMTask * task) {
         std::vector<llama_token> prompt_tokens = tokenize_prompt(g_model, task->prompt);
         if (prompt_tokens.empty()) {
             task->result = "[ERROR: failed to tokenize prompt]";
+            Log("\t[ERROR: failed to tokenize prompt]");
             task->status = TASK_ERROR;
             return;
         }
@@ -303,8 +397,13 @@ static void run_task(LLMTask * task) {
         prompt_batch.n_seq_id    = nullptr;
         prompt_batch.logits      = nullptr;
 
+#ifdef LOG_GENERATION
+        Log("\tBuilding batch for prompt...");
+#endif
+
         if (llama_decode(task->ctx, prompt_batch) != 0) {
             task->result = "[ERROR: llama_decode failed for prompt]";
+            Log("\t[ERROR: llama_decode failed for prompt]");
             task->status = TASK_ERROR;
             return;
         }
@@ -314,6 +413,10 @@ static void run_task(LLMTask * task) {
         // ----------------------------------
         std::string output;
         const int   max_new_tokens = task->max_tokens;  // tune this for story length
+
+#ifdef LOG_GENERATION
+        Log("\tRunning loop...");
+#endif
 
         for (int i = 0; i < max_new_tokens; ++i) {
             // a) Sample next token (greedy)
@@ -343,7 +446,12 @@ static void run_task(LLMTask * task) {
                 /* special */ true  // or false, depending on whether you want special tokens rendered
             );
 
-            if (len > 0) {
+            if (len > 0)
+            {
+#ifdef LOG_GENERATION
+                Log("\tGenerating token %i/%i...", i, max_new_tokens);
+#endif
+
                 output.append(buf, len);
 
                 // copy partial output into task->result in a threadsafe way
@@ -391,8 +499,13 @@ static void run_task(LLMTask * task) {
             tok_batch.n_seq_id    = nullptr;
             tok_batch.logits      = nullptr;
 
+#ifdef LOG_GENERATION
+            Log("\tFeed token %i/%i back...", i, max_new_tokens);
+#endif
+
             if (llama_decode(task->ctx, tok_batch) != 0) {
                 task->result = "[ERROR: llama_decode failed during generation]";
+                Log("\t[ERROR: llama_decode failed during generation]");
                 task->status = TASK_ERROR;
                 return;
             }
@@ -400,7 +513,8 @@ static void run_task(LLMTask * task) {
             {
                 std::lock_guard<std::mutex> lock(g_taskMutex);
 
-                if (task->interrupt) {
+                if (task->interrupt)
+                {
                     task->result = output;
                     task->status = TASK_INTERRUPT;
                     return;
@@ -410,7 +524,14 @@ static void run_task(LLMTask * task) {
 
         task->result = output;
         task->status = TASK_FINISHED;
-    } catch (...) {
+
+        Log("\tGeneration complete!");
+
+    }
+    catch (...)
+    {
+        Log("\t[EXCEPTION: generation crashed]");
+
         task->result = "[EXCEPTION: generation crashed]";
         task->status = TASK_ERROR;
     }
@@ -423,17 +544,36 @@ extern "C" {
 __declspec(dllexport) int llm_init(const char * model_path, int gpu_layers, int context_size) {
     std::lock_guard<std::mutex> lock(g_llmMutex);
 
-    if (g_model) {
+    if (g_model)
+    {
         // Already initialized, treat as success
         return LLM_INIT_OK;
     }
 
-    if (model_path == nullptr || model_path[0] == '\0') {
+#ifdef FORCE_CPU
+    gpu_layers = 0;
+#endif
+
+#ifdef FORCE_CONTEXT_SIZE
+    context_size = FORCE_CONTEXT_SIZE;
+#endif
+
+    Log("Initializing %s (layers = %i, context size = %i)...", model_path, gpu_layers, context_size);
+
+    if (model_path == nullptr || model_path[0] == '\0')
+    {
+        
         return LLM_INIT_ERROR;
     }
 
-    llama_backend_init();
+    Log("\tInitializing backend!");
 
+    llama_backend_init();
+    llama_log_set(llama_log_callback, nullptr);
+
+    const char * sys_info = llama_print_system_info();
+    Log("llama system info:\n%s", sys_info);
+      
     // ---------------------------
     // 1. Check if file exists
     // ---------------------------
@@ -441,7 +581,7 @@ __declspec(dllexport) int llm_init(const char * model_path, int gpu_layers, int 
     {
         char buffer[8192];
         sprintf_s(buffer, 8192, "ERROR: Failed to load file '%s'!", model_path);
-        debug_message(buffer);
+        Log(buffer);
 
         return LLM_INIT_MODEL_NOT_FOUND;
     }
@@ -449,6 +589,9 @@ __declspec(dllexport) int llm_init(const char * model_path, int gpu_layers, int 
     // ---------------------------
     // 2. Model parameters
     // ---------------------------
+
+    Log("\tLoading model...");
+
     llama_model_params mparams = llama_model_default_params();
     mparams.n_gpu_layers       = gpu_layers;
 
@@ -462,8 +605,11 @@ __declspec(dllexport) int llm_init(const char * model_path, int gpu_layers, int 
     return LLM_INIT_OK;
 }
 
-__declspec(dllexport) int llm_query(const char * prompt, int maxTokens) {
-    if (!prompt) {
+__declspec(dllexport) int llm_query(const char * prompt, int maxTokens)
+{
+    if (!prompt)
+    {
+        Log("Query failed, no prompt provided!");
         return -1;
     }
 
@@ -481,6 +627,8 @@ __declspec(dllexport) int llm_query(const char * prompt, int maxTokens) {
     LLMTask * raw = task.get();
 
     g_tasks[id] = std::move(task);
+
+    Log("Task %i created!", id);
 
     return id;   
 }
@@ -553,15 +701,20 @@ __declspec(dllexport) int llm_start(int query_id)
 {
     std::lock_guard<std::mutex> lock(g_taskMutex);
 
+    Log("Starting task %i!", query_id);
+
     auto it = g_tasks.find(query_id);
     if (it == g_tasks.end())
     {
+        Log("\tInvalid ID for task start!");
         return TASK_INVALID_ID;
     }
 
     LLMTask * task  = it->second.get();
     if (task->status == TASK_QUEUED)
     {
+        Log("\tStarting thread!");
+
         task->worker = std::thread([task]() { run_task(task); });
         task->worker.detach();
     }
@@ -573,31 +726,46 @@ _declspec(dllexport) int llm_stop(int query_id)
 {
     std::lock_guard<std::mutex> lock(g_taskMutex);
 
+    Log("\tStopping task %i!", query_id);
+
     auto it = g_tasks.find(query_id);
     if (it == g_tasks.end())
     {
+        Log("\tInvalid ID for task stop!");
         return TASK_INVALID_ID;
     }
 
     LLMTask* task  = it->second.get();
     task->interrupt = true;
 
+    Log("\tStopping thread!");
+
     return TASK_INTERRUPT;
 }
 
-__declspec(dllexport) int llm_get_answer(int    query_id, char * buffer, int    buffer_size, int *  out_generated_tokens, int *  out_max_tokens)
+__declspec(dllexport) int llm_get_answer(int query_id, char * buffer, int    buffer_size, int *  out_generated_tokens, int *  out_max_tokens)
 {
     std::lock_guard<std::mutex> lock(g_taskMutex);
 
+#ifdef LOG_ANSWER
+    Log("\tGet answer for task %i...", query_id);
+#endif
+
     auto it = g_tasks.find(query_id);
-    if (it == g_tasks.end()) {
+    if (it == g_tasks.end())
+    {
+        Log("\tInvalid ID for get_answer!");
         return TASK_INVALID_ID;
     }
 
     LLMTask * task = it->second.get();
 
     // Write current text, even if still running
-    if (buffer && buffer_size > 0) {
+#ifdef LOG_ANSWER
+    Log("\tGenerating output...");
+#endif
+    if ((buffer) && (buffer_size > 0))
+    {
         int len = (int) task->result.size();
         if (len >= buffer_size) {
             len = buffer_size - 1;
@@ -606,11 +774,13 @@ __declspec(dllexport) int llm_get_answer(int    query_id, char * buffer, int    
         buffer[len] = '\0';
     }
 
-    if (out_generated_tokens) {
+    if (out_generated_tokens)
+    {
         *out_generated_tokens = task->generated_tokens;
     }
 
-    if (out_max_tokens) {
+    if (out_max_tokens)
+    {
         *out_max_tokens = task->max_tokens;
     }
 
@@ -622,12 +792,17 @@ __declspec(dllexport) int llm_get_answer(int    query_id, char * buffer, int    
         task->clear();
 
         g_tasks.erase(it);
+
+        Log("\tTask complete!");
     }
 
     return (int) status;
 }
 
-__declspec(dllexport) void llm_shutdown() {
+__declspec(dllexport) void llm_shutdown()
+{
+    Log("\tShutting down LLM...");
+
     {
         std::lock_guard<std::mutex> lock(g_taskMutex);
 

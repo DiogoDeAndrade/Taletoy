@@ -29,6 +29,9 @@ I'm using llama.cpp, so here's some information regarding how to compile
   cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE="C:\projects\Other\vcpkg\scripts\buildsystems\vcpkg.cmake"
   cmake --build . --config Release 
   ```
+
+Note that is likely you'll have to disable AVX512 support if you intend to run this in machines like laptops or less powerful. To do so, add the following to the first cmake command above: -DGGML_NATIVE=OFF -DLLAMA_NATIVE=OF -DGGML_AVX512=OFF -DGGML_AVX512_VBMI=OFF -DGGML_AVX512_VNNI=OFF -DGGML_AVX512_BF16=OFF
+
 - [Find a model](https://huggingface.co/models?search=gguf) - I selected [Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct)
 - Now, now we can try the model and see if everything is working.
   ```
@@ -36,13 +39,36 @@ I'm using llama.cpp, so here's some information regarding how to compile
   cd Release
   llama-cli.exe -m c:\projects\Other\models\Meta-Llama-3.1-8B-Instruct-Q4_K_L.gguf -p "Write a short story about a farmer who restores an old barn, with no more than 4 paragraphs."
   ```
-- Now we need to build a DLL wrapper. The file is available on WrapperDLL/llm_wrapper.cpp. The CMakeLists.txt file is just a sample, you need to add this to the existing file on llama.cpp:
+- Now we need to build a DLL wrapper. The file is available on WrapperDLL/llm_wrapper.cpp. The CMakeLists.txt file is just a sample, you need to add this to the existing file on llama.cpp (_check the directories_):
   ```
   add_library(llm_wrapper SHARED custom/llm_wrapper.cpp)
   target_link_libraries(llm_wrapper PRIVATE llama)
   target_include_directories(llm_wrapper PRIVATE .)
   target_include_directories(llm_wrapper PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+  # Where you want the DLL to end up (change this if needed)
+  set(UNITY_PLUGIN_DIR "C:/projects/GCC/Taletoy/Assets/Plugins/x86_64")
+
+  # After building llm_wrapper, copy the DLL to the Unity plugins folder
+  add_custom_command(
+      TARGET llm_wrapper
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E make_directory "${UNITY_PLUGIN_DIR}"
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          $<TARGET_FILE:llm_wrapper>
+          "${UNITY_PLUGIN_DIR}/$<TARGET_FILE_NAME:llm_wrapper>"
+  )
+
+  # After building llm_wrapper, copy the src to the src folder
+  add_custom_command(
+      TARGET llm_wrapper
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "C:/projects/Other/llama.cpp/custom"
+        "C:/projects/GCC/Taletoy/WrapperDLL"
+  )
   ```
+- Don't forget to copy all the DLLs, not only the "llm_wrapper.dll": ggml.dll, ggml-base.dll, ggml-cpu.dll, llama.dll.
 - I'm not going to distribute the model here, and I'll add instructions on the itch.io page of the game, since it's a 5Gb download!
 
 ## Art

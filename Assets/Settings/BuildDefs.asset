@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42491f90e3b9d9c4db7fa470746453ce, type: 3}
   m_Name: BuildDefs
   m_EditorClassIdentifier: Assembly-CSharp::UC.BuildDefs
-  version: 1.0.0
+  version: 1.0.1
   username: diogoandrade
   projectName: taletoy
   buildWindows: 1

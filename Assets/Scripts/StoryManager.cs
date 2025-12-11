@@ -179,7 +179,7 @@ public class StoryManager : MonoBehaviour
                 buttonsContainer.FadeIn(0.5f);
                 buttonsContainer.interactable = true;
             }
-            buttonsGroup.SetEnable(true);
+            buttonsGroup.EnableUI(true);
 
             queryId = -1; // finished
         }
@@ -232,8 +232,8 @@ public class StoryManager : MonoBehaviour
                 return text.Substring(0, tmpIndex);
             }
 
-            // No <story> tag -> return nothing
-            return "";
+            // No <story> tag -> return full text
+            return text;
         }
 
         // Move to the content after <story>

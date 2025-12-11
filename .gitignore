@@ -79,3 +79,4 @@ Builds/*
 
 # AI Models
 *.gguf
+log.txt
